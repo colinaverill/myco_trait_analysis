@@ -35,10 +35,10 @@
 module load R/3.4.0
 #
 # cd into directory, for safety purposes
-cd /projectnb/talbot-lab-data/caverill/myco_traits_analysis
+cd /projectnb/talbot-lab-data/caverill/myco_trait_analysis
 #
 # in the directory specified above, invoke this function:
-Rscript full_tpl_lookup/full_tpl_lookup.r
+Rscript data_construction/full_tpl_lookup/full_tpl_lookup.r
 #
 #
 #End of commands.

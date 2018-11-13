@@ -3,7 +3,7 @@
 host <- system('hostname', intern=T)
 data.dir <- '/fs/data3/caverill/myc_traits/'
 #data dir is somewhere else if you on remote geo server.
-if(host == 'geo'){
+if(host != 'pecan2'){
   data.dir <- '/projectnb/talbot-lab-data/caverill/myc_traits/'
 }
 
@@ -82,9 +82,10 @@ merged_inter_traits.path <- paste0(data.dir,'merged_inter_traits.rds')
 merged_intra_traits_names_hand_checked.path <- paste0(data.dir,'merged_intra_traits_names_hand_checked.rds')
  
 #Analysis files.---- 
-intra_specific_analysis_data.path <- paste0(data.dir,'intra_specific_for_analysis.rds')
-inter_specific_analysis_data.path <- paste0(data.dir,'inter_specific_for_analysis.rds')
-                   phylogeny.path <- paste0(data.dir,'colin_tree.tre')
+intra_specific_pre.subset_data.path <- paste0(data.dir, 'intra_specific_pre.subset_data.rds')
+  intra_specific_analysis_data.path <- paste0(data.dir,'intra_specific_for_analysis.rds')
+  inter_specific_analysis_data.path <- paste0(data.dir,'inter_specific_for_analysis.rds')
+                     phylogeny.path <- paste0(data.dir,'colin_tree.tre')
                    
 #Analysis output.----
 dir <- paste0(data.dir,'analysis_output/')

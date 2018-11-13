@@ -12,7 +12,7 @@ output.path <- full_tpl_output.path
 #load data.----
 d <- readRDS(tpl_names_lookup.path)
 
-testing = T
+testing = F
 if(testing == T){
   d <- d[1:100,]
 }

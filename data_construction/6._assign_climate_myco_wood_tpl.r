@@ -1,4 +1,5 @@
 #Assign mycorrhizal type, woodiness, worldclim, GBIF climate envelope.
+#clear environment, load packages, functions and file paths.----
 rm(list=ls())
 library(data.table)
 library(Taxonstand)
@@ -8,9 +9,10 @@ source('paths.r')
 source('functions/worldclim2_grab.r')
 source('functions/spp_tpl.spp_merge.r')
 
-#Set output.path.
-intra.output.path <- intra_specific_analysis_data.path
-inter.output.path <- inter_specific_analysis_data.path
+#Set output.paths.----
+intra_presub_output.path <- intra_specific_pre.subset_data.path
+       intra.output.path <- intra_specific_analysis_data.path
+       inter.output.path <- inter_specific_analysis_data.path
 
 #load merged intra-specific data, and databases.----
    d <- data.table(readRDS(merged_intra_traits_names_hand_checked.path))
@@ -20,6 +22,7 @@ wood <- data.table(readRDS(merged_wood_traits.path))
 gbif <- data.table(read.csv(gbif_raw.path))
  tpl <- data.table(readRDS(tpl_names_lookup.path))
  phy <- read.tree(phylogeny.path)
+full.tpl <- data.table(readRDS(full_tpl_output.path))
 
 #modify doi names.----
 setnames(   d, 'doi','trait_doi')
@@ -88,11 +91,40 @@ pgf <- rbind(gymno,angio)
 #merge in pgf assignments.
 d <- merge(d,pgf, all.x=T)
 
+#Assign plant Family.----
+d$tpl.Genus <- gsub( " .*$", "", d$tpl.Species)
+full.tpl <- full.tpl[,.(New.Genus,Family)]
+setkey(full.tpl,New.Genus)
+full.tpl <- unique(full.tpl, by = 'New.Genus')
+d <- merge(d,full.tpl[,.(New.Genus,Family)], by.x = 'tpl.Genus', by.y = 'New.Genus', all.x = T)
+d <- data.table(d)
+d[Family =='', Family := NA]
+setnames(d,'Family','tpl.Family')
 
 #grab mat and map based on worldclim.----
 clim <- worldclim2_grab(d$latitude, d$longitude)
 d <- cbind(d,clim)
 intra.out <- d
+
+#Subset to match study inclusion criteria.----
+pre_subset_intra_out <- d
+d <- d[MYCO_ASSO %in% c('AM','ECM')] #Only AM and ECM species.
+d <- d[!is.na(pgf),]                 #Analysis requires growth-form assignment (angio/gymno)
+d <- d[woodiness == 'W',]            #Only woody species (herbaceous are all AM in this data set).
+#set some reasonable constraint on tissue element concentrations.
+#These constraints only affect green leaf elements, and remove less than 0.5% of observations.
+nrow(d[!is.na(Ngreen) & Ngreen < 200])/nrow(d[!is.na(Ngreen)])
+nrow(d[!is.na(Pgreen) & Pgreen <  20])/nrow(d[!is.na(Pgreen)])
+nrow(d[!is.na(Nsenes) & Nsenes < 200])/nrow(d[!is.na(Nsenes)])
+nrow(d[!is.na(Psenes) & Psenes < 200])/nrow(d[!is.na(Psenes)])
+nrow(d[!is.na(Nroots) & Nroots < 200])/nrow(d[!is.na(Nroots)])
+nrow(d[!is.na(Proots) & Proots < 200])/nrow(d[!is.na(Proots)])
+d <- d[Ngreen < 200,]
+d <- d[Nsenes < 200,]
+d <- d[Nroots < 200,]
+d <- d[Pgreen <  20,]
+d <- d[Psenes <  20,]
+d <- d[Proots <  20,]
 
 #get interspecific output.----
 q.traits <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root_lifespan','mat','map','gbif_temp','gbif_precip')
@@ -108,5 +140,6 @@ d[sapply(d,is.na)] = NA
 inter.out <- d
 
 #save output.----
+saveRDS(pre_subset_intra_out, intra_presub_output.path)
 saveRDS(intra.out, intra.output.path)
 saveRDS(inter.out, inter.output.path)
