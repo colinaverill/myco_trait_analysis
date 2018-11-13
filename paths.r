@@ -1,6 +1,11 @@
 #paths for Mycorrhizal trait analysis project.
 #main data directory.----
+host <- system('hostname', intern=T)
 data.dir <- '/fs/data3/caverill/myc_traits/'
+#data dir is somewhere else if you on remote geo server.
+if(host == 'geo'){
+  data.dir <- '/projectnb/talbot-lab-data/caverill/myc_traits/'
+}
 
 #raw trait files.----
        glop_raw.path <- paste0(data.dir,'Glopnet_2017_10_09.csv')
@@ -44,10 +49,8 @@ zann_wood_clean.path <- paste0(dir,'zann_wood_clean.rds')
 bien_wood_clean.path <- paste0(dir,'bien_wood_clean.rds')
 
 #The Plant List standardized names.----
-traits_tpl_names.path <- paste0(dir,'traits_tpl_names.rds')
-  myco_tpl_names.path <- paste0(dir,  'myco_tpl_names.rds')
-  wood_tpl_names.path <- paste0(dir,  'wood_tpl_names.rds')
 tpl_names_lookup.path <- paste0(dir,'tpl_names_lookup.rds')
+ full_tpl_output.path <- paste0(dir, 'full_tpl_lookup.rds')
 
 #processed trait data for intra-specific analysis.----
 dir <- paste0(data.dir,'clean_intraspecific_data/')

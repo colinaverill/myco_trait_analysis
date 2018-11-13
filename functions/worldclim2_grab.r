@@ -15,8 +15,7 @@
 #'                      64.766184, 64.766184, 64.766184, 64.766184, 64.766184), .Dim = c(10L, 
 #'                                                                                      2L))
 #' test.out <- worldclim2_grab(points[,2], points[,1])
-worldclim2_grab <- function(latitude,longitude,elev = 500, n.sim = 1000,
-                            worldclim2_folder = '/fs/data3/caverill/WorldClim2/'){
+worldclim2_grab <- function(latitude, longitude, worldclim2_folder = '/fs/data3/caverill/WorldClim2/'){
   
   #make points an object
   points <- cbind(longitude, latitude)

@@ -88,6 +88,7 @@ pgf <- rbind(gymno,angio)
 #merge in pgf assignments.
 d <- merge(d,pgf, all.x=T)
 
+
 #grab mat and map based on worldclim.----
 clim <- worldclim2_grab(d$latitude, d$longitude)
 d <- cbind(d,clim)
