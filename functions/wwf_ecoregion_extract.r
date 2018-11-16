@@ -11,17 +11,17 @@
 #' @export
 #'
 #' @examples
-#' latitude <- c(44.2833, 44.5167, 35.28223324, 35.28223324, 47.18333333)
-#' longitude <- c(-71.2667, -72.8, -111.6241957, -111.6241957, 128.8833333)
+#'  latitude <- c( 44.2833, 44.5167,  35.28223324,  35.28223324, NA, 47.18333333)
+#' longitude <- c(-71.2667,   -72.8, -111.6241957, -111.6241957, NA, 128.8833333)
 #' wwf_ecoregion_extract(latitude, longitude)
 wwf_ecoregion_extract <- function(latitude, longitude, 
                               shape_path = '/fs/data3/caverill/wwf_ecoregions/official/'){
   #make sure you have the packages.
   check <- installed.packages()
   check <- check[,1]
-  if('sp'    %in% check == F){cat('Install package "sp"   ')}
-  if('rgdal' %in% check == F){cat('Install package "rgdal"')}
-  if('plyr'  %in% check == F){cat('Install package "plyr" ')}
+  if('sp'    %in% check == F){stop('Install package "sp"'   )}
+  if('rgdal' %in% check == F){stop('Install package "rgdal"')}
+  if('plyr'  %in% check == F){stop('Install package "plyr"' )}
   
   #hand copying biome key from: http://omap.africanmarineatlas.org/BIOSPHERE/data/note_areas_sp/Ecoregions_Ecosystems/WWF_Ecoregions/WWFecoregions.htm
   biome_num  <- c(1:14)
@@ -42,7 +42,7 @@ wwf_ecoregion_extract <- function(latitude, longitude,
   #extract the damn layer.
   points <- cbind(yup$longitude, yup$latitude)   #points object.
    layer <- rgdal::readOGR(shape_path, 'wwf_terr_ecos') #load layer.
-     pts <- sp::SpatialPoints(points, proj4string = CRS(proj4string(layer))) #project points.
+     pts <- sp::SpatialPoints(points, proj4string = sp::CRS(sp::proj4string(layer))) #project points.
   output <- sp::over(pts, layer)                 #extract the layer.
   output <- data.frame(cbind(yup, output))       #add in lat/long and unq value to sort.
   output <- plyr::rbind.fill(output, nope)       #add back in the NAs.
