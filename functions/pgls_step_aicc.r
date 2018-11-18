@@ -48,10 +48,10 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
       if(  class(fit) == 'try-error' ){
         to_return <- data.frame("try-error in pgls",NA)
       }
+      colnames(to_return)  <- c('preds','aicc')
       return(to_return)
-    }
+     }
     round.out <- do.call(rbind,round.out)
-    colnames(round.out)  <- c('preds','aicc')
     round.out$aicc.diff <- c(ref.aicc_sub) - c(round.out$aicc)
     round.out$aicc_round <- rep(j, nrow(round.out))
     pos <- which.max(round.out$aicc.diff)
