@@ -30,10 +30,12 @@ setnames(d,'root_lifespan','root.L')
 #Loop of traits of interest.----
 aic_compare <- list()
 traits <- c('Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots','log.LL','root.L')
-traits <- c(traits[2],traits[5])
-preds <- c('nfix','pgf','mat.c','map.c','biome')
 tic()
-for(i in 1:length(aic_compare)){
+for(i in 1:length(traits)){
+  preds <- c('pgf','nfix','mat.c','map.c','biome')
+  if(traits[i] == 'root.L'){
+    preds <- c('pgf','mat.c','map.c','biome') #no nfixers among root chem observations.
+  }
   aic_compare[[i]] <- pgls_step_aicc(y = traits[i], x = preds, data = d, phylogeny = phy, n.cores = n.cores)
   cat(traits[i],'comparison complete.\n')
 }

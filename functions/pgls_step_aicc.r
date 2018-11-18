@@ -40,10 +40,15 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
   while(check > 0){
     round.out <- list()
     round.out <- 
-    foreach(i = 1:length(x)) %dopar% { 
-      fit <- pic_pro(y, c('MYCO_ASSO',x[-i]), trait.data = dat, phylogeny = phylogeny)
-      to_return <- data.frame(paste(x[-i],collapse =','), fit$aicc)
-      round.out[[i]] <- to_return
+    foreach(k = 1:length(x)) %dopar% { 
+      fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny))
+      if(!(class(fit) == 'try-error')){
+        to_return <- data.frame(paste(x[-k],collapse =','), fit$aicc)
+      }
+      if(  class(fit) == 'try-error' ){
+        to_return <- data.frame("try-error in pgls",NA)
+      }
+      return(to_return)
     }
     round.out <- do.call(rbind,round.out)
     colnames(round.out)  <- c('preds','aicc')
@@ -64,6 +69,6 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
   all.out <- do.call(rbind, all.out)
   final_return <- list(all.out,c('MYCO_ASSO',x))
   names(final_return) <- c('aicc_comparisons','win_preds')
-  cat("best model includes",paste(c('MYCO_ASSO',x), collapse = ' , '),'as predictors.')
+  cat("best model includes",paste(c('MYCO_ASSO',x), collapse = ' , '),'as predictors.\n')
   return(final_return)
 }
