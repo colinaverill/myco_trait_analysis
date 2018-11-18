@@ -19,6 +19,11 @@ cptd_traits_raw.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Hard Traits.csv
        miat_raw.path <- paste0(data.dir,'miatto_2016.csv')
        zann_raw.path <- paste0(data.dir,'GlobalWoodinessDatabase.csv')
        gbif_raw.path <- paste0(data.dir,'species_climate_means_GBIF.csv')
+      nodDB_raw.path <- paste0(data.dir,'nodDB_v1.csv')
+       teow_raw.path <- '/fs/data3/caverill/wwf_ecoregions/official/wwf_terr_ecos.shp'
+ brot_trait_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_dat.csv')
+   brot_tax_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_tax.csv')
+    daac651_raw.path <- paste0(data.dir,'litter_decomp_ornl_daac_651/data/litter_quality.txt')
      
 #raw mycorrhizal trait files.----
 dir <- data.dir
@@ -30,6 +35,11 @@ dir <- data.dir
 harley_harley_myco_raw.path <- paste0(dir,'Harley_Harley_2018_01_11.csv')
     poaceae_genera_raw.path <- paste0(dir,'poaceae_genera_wikipedia.rds')
 
+#phylogeny files.----
+  phylogeny_raw.path <- paste0(data.dir,'colin_tree.tre')
+#phylogeny_clean.path <- paste0(data.dir,'colin_tree_clean.tre') #never mind. Once we clean up phyit wont load with read.tree().
+    
+    
 #Clean mycorrhizal files for merging.----
           fred_myco_clean.path <- paste0(dir,'fred_myco_clean.rds')
           e093_myco_clean.path <- paste0(dir,'e093_myco_clean.rds')
@@ -62,7 +72,8 @@ fred_2.0_intra.path <- paste0(dir,'fred_2.0_intra_clean.rds')
     cptd_intra.path <- paste0(dir,'cptd_intra_clean.rds')
     miat_intra.path <- paste0(dir,'miat_intra_clean.rds')
     bien_intra.path <- paste0(dir,'bien_intra_clean.rds')
-
+    brot_intra.path <- paste0(dir,'brot_intra_clean.rds')
+ daac651_intra.path <- paste0(dir,'daac651_intra_clean.path')
 #processed trait data for inter-specific analysis (species-level means).----
 dir <- paste0(data.dir,'clean_interspecific_data/')
 system(paste0('mkdir -p ',dir))
@@ -85,9 +96,25 @@ merged_intra_traits_names_hand_checked.path <- paste0(data.dir,'merged_intra_tra
 intra_specific_pre.subset_data.path <- paste0(data.dir, 'intra_specific_pre.subset_data.rds')
   intra_specific_analysis_data.path <- paste0(data.dir,'intra_specific_for_analysis.rds')
   inter_specific_analysis_data.path <- paste0(data.dir,'inter_specific_for_analysis.rds')
-                     phylogeny.path <- paste0(data.dir,'colin_tree.tre')
                    
 #Analysis output.----
 dir <- paste0(data.dir,'analysis_output/')
 system(paste0('mkdir -p ',dir))
 variance_decomp_output.path <- paste0(dir,'variance_decomposition.rds')
+ lm_pgls_means_myc.pgf_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_models.rds')
+lm_pgls_means_myc.pgf_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_summary.rds')
+lm_pgls_means_myc.pgf.clim_models.path <- paste0(dir,'lm_pgls_means_myc.pgf.clim_models.rds')
+lm_pgls_means_myc.pgf.clim_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf.clim_summary.rds')
+lm_pgls_means_myc.pgf.gbif_models.path <- paste0(dir,'lm_pgls_means_myc.pgf.gbif_models.rds')
+lm_pgls_means_myc.pgf.gbif_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf.gbif_summary.rds')
+lm_pgls_means_myc.pgf_merged.clim_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_models.rds')
+lm_pgls_means_myc.pgf_merged.clim_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_summary.rds')
+lm_pgls_means_myc.pgf_myco.nfix.int_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_myco.nfix.int_models.rds')
+lm_pgls_means_myc.pgf_myco.nfix.int_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_myco.nfix.int_summary.rds')
+biome_aicc_pgls_analysis.path <- paste0(dir,'biome_aicc_pgls_analysis.rds')
+aicc_model_comparison_plgs.path <- paste0(dir,'aicc_model_comparison_plgs.path')
+
+#Figure paths.----
+dir <- 'figures/'
+var_decomp_figure.path <- paste0(dir,'variance_decomp.png')
+sample_map_figure.path <- paste0(dir,'global_sampling_map.png')

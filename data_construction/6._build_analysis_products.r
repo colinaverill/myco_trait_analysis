@@ -8,6 +8,7 @@ library(phytools)
 source('paths.r')
 source('functions/worldclim2_grab.r')
 source('functions/spp_tpl.spp_merge.r')
+source('functions/wwf_ecoregion_extract.r')
 
 #Set output.paths.----
 intra_presub_output.path <- intra_specific_pre.subset_data.path
@@ -21,8 +22,9 @@ myco.gen <- data.table(readRDS(myco_genera_clean.path))
 wood <- data.table(readRDS(merged_wood_traits.path))
 gbif <- data.table(read.csv(gbif_raw.path))
  tpl <- data.table(readRDS(tpl_names_lookup.path))
- phy <- read.tree(phylogeny.path)
+ phy <- read.tree(phylogeny_raw.path)
 full.tpl <- data.table(readRDS(full_tpl_output.path))
+nodDB <- data.table(read.csv(nodDB_raw.path))
 
 #modify doi names.----
 setnames(   d, 'doi','trait_doi')
@@ -43,19 +45,27 @@ wood <- merge(wood, tpl, all.x=T)
 d <- spp_tpl.spp_merge(d, wood)
 d <- spp_tpl.spp_merge(d, myco)
 
-#Assign mycorrhizal type using genera database.----
-#this spot feels a little bit hacky, but works.
-  assigned <- d[!is.na(d$MYCO_ASSO),]
-unassigned <- d[ is.na(d$MYCO_ASSO),]
-unassigned$MYCO_ASSO <- NULL
-unassigned$myco_doi <- NULL
-unassigned$genus <- gsub( " .*$", "", unassigned$Species)
-unassigned$tpl.genus <- gsub( " .*$", "", unassigned$tpl.Species)
-myco.gen$tpl.genus <- myco.gen$genus
-unassigned <- spp_tpl.spp_merge(unassigned,myco.gen, merge.columns = c('genus','tpl.genus'))
-unassigned$genus <- NULL
-unassigned$tpl.genus <- NULL
-d <- rbind(assigned,unassigned) #re-combine assigned nad unassigned (...which was just assigned)
+#Assign mycorrhizal type using genus-level mycorrhizal knowledge.----
+#we know these genera are correct, and we know many of these legacy mycorrhizal databases can have errors.
+#Therefore, genus level assignment overrides species match from a reference.
+d <- data.table(d)
+d$tpl.Genus <- gsub( " .*$", "", d$tpl.Species)
+to_assign <- d[  tpl.Genus %in% myco.gen$genus ]
+assigned  <- d[!(tpl.Genus %in% myco.gen$genus)]
+to_assign$myco_doi <- NULL
+to_assign$MYCO_ASSO <- NULL
+to_assign <- merge(to_assign, myco.gen, by.x='tpl.Genus',by.y ='genus', all.x = T)
+d <- rbind(assigned,to_assign)
+
+#Assign Nfix using NodDB.----
+yes.nfix  <- c('Rhizobia','likely_Rhizobia','Frankia','Nostocaceae','likely_present','Present')
+yes.nfix2 <- c('Rhizobia','Frankia','Nostocaceae','Present')
+nodDB[Consensus.estimate %in% yes.nfix , nfix  := 1]
+nodDB[Consensus.estimate %in% yes.nfix2, nfix2 := 1]
+nodDB <- nodDB[nfix == 1,.(genus,nfix,nfix2)]
+d$tpl.Genus <- gsub( " .*$", "", d$tpl.Species)
+d$nfix  <- ifelse(d$tpl.Genus %in% nodDB$genus, 1, 0)
+d$nfix2 <- ifelse(d$tpl.Genus %in% nodDB[nfix2 == 1,]$genus, 1, 0)
 
 #Assign gbif climate.----
 gbif$X <- NULL
@@ -92,7 +102,6 @@ pgf <- rbind(gymno,angio)
 d <- merge(d,pgf, all.x=T)
 
 #Assign plant Family.----
-d$tpl.Genus <- gsub( " .*$", "", d$tpl.Species)
 full.tpl <- full.tpl[,.(New.Genus,Family)]
 setkey(full.tpl,New.Genus)
 full.tpl <- unique(full.tpl, by = 'New.Genus')
@@ -101,10 +110,14 @@ d <- data.table(d)
 d[Family =='', Family := NA]
 setnames(d,'Family','tpl.Family')
 
+#assign biome.----
+biome <- wwf_ecoregion_extract(d$latitude, d$longitude)
+biome <- data.table(biome)
+d <- cbind(d, biome[,.(ECO_NAME,biome_name)])
+
 #grab mat and map based on worldclim.----
 clim <- worldclim2_grab(d$latitude, d$longitude)
 d <- cbind(d,clim)
-intra.out <- d
 
 #Subset to match study inclusion criteria.----
 pre_subset_intra_out <- d
@@ -119,23 +132,58 @@ nrow(d[!is.na(Nsenes) & Nsenes < 200])/nrow(d[!is.na(Nsenes)])
 nrow(d[!is.na(Psenes) & Psenes < 200])/nrow(d[!is.na(Psenes)])
 nrow(d[!is.na(Nroots) & Nroots < 200])/nrow(d[!is.na(Nroots)])
 nrow(d[!is.na(Proots) & Proots < 200])/nrow(d[!is.na(Proots)])
-d <- d[Ngreen < 200,]
-d <- d[Nsenes < 200,]
-d <- d[Nroots < 200,]
-d <- d[Pgreen <  20,]
-d <- d[Psenes <  20,]
-d <- d[Proots <  20,]
+d <- d[Ngreen < 200 | is.na(Ngreen),]
+d <- d[Nsenes < 200 | is.na(Nsenes),]
+d <- d[Nroots < 200 | is.na(Nroots),]
+d <- d[Pgreen <  20 | is.na(Pgreen),]
+d <- d[Psenes <  20 | is.na(Psenes),]
+d <- d[Proots <  20 | is.na(Proots),]
+#only include species in phylogeny.
+d$Species <- d$tpl.Species
+tree$node.label <- NULL
+d <- d[tpl.Species %in% tree$tip.label,]
+intra.out <- d
 
 #get interspecific output.----
 q.traits <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root_lifespan','mat','map','gbif_temp','gbif_precip')
-d.traits <- c('tpl.Species','Species','MYCO_ASSO','woodiness')
+d.traits <- c('tpl.Species','Species','MYCO_ASSO','woodiness','pgf','nfix','nfix2')
+#grab most frequent biome, accounts for "ties".
+#biome_out <- table(d[,.(tpl.Species,biome_name)])
+library(dplyr)
+biome_out <-  as.data.frame(
+    d %>%
+    dplyr::count(tpl.Species, biome_name) %>%
+    dplyr::group_by(tpl.Species) %>%
+    dplyr::filter(n == max(n)) %>%
+    dplyr::mutate(r = row_number()) %>%
+    tidyr::spread(r, biome_name) %>%
+    dplyr::select(-n))
+colnames(biome_out) <- c('tpl.Species','biome_1','biome_2')
+biome_out[] <- lapply(biome_out, as.character)
+detach('package:dplyr')
+#There are only 2 species with equally frequent biome categorizations, and they don't really matter.
+#Just set everything to the first biome column.
+biome_out <- biome_out[,c('tpl.Species','biome_1')]
+colnames(biome_out)[2] <- 'biome'
+
+#get quantitative trait means.
 d <- data.table(d)
 z <- d[,lapply(.SD, mean, na.rm=T), by = tpl.Species, .SDcols=q.traits]
 setkey(d,'tpl.Species')
+#merge in discrete traits.
 d <- unique(d, by = 'tpl.Species')
 d <- as.data.frame(d)
 d <- merge(z,d[,d.traits], by = 'tpl.Species')
+d <- merge(d, biome_out, all.x = T)
+
+#Get mat.c and map.c, where these are first taken from gbif, and then from itra-specific observations.
+d[,mat.c := gbif_temp]
+d[is.na(mat.c), mat.c := mat]
+d[,map.c := gbif_precip]
+d[is.na(map.c), map.c := map]
+
 #convert NaN values to NA
+d <- as.data.frame(d)
 d[sapply(d,is.na)] = NA 
 inter.out <- d
 

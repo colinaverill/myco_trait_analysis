@@ -25,12 +25,16 @@ wwf_ecoregion_extract <- function(latitude, longitude,
   
   #hand copying biome key from: http://omap.africanmarineatlas.org/BIOSPHERE/data/note_areas_sp/Ecoregions_Ecosystems/WWF_Ecoregions/WWFecoregions.htm
   biome_num  <- c(1:14)
-  biome_name <- c('Tropical and Subtropical Moist Broadleaf Forests','Tropical and Subtropical Dry Broadleaf Forests',
-                  'Tropical and Subtropical Coniferous Forests','Temperate Broadleaf and Mixed Forests',
-                  'Temperate Conifer Forests','Boreal Forests and Taiga','Tropical and Subtropical Grasslands Savannas and Shrublands',
-                  'Temperate Grasslands Savannas and Shrublands','Flooded Grasslands and Savannas','Montane Grasslands and Shrublands',
-                  'Tundra','Mediterranean Forests Woodlands and Scrub','Deserts and Xeric Shrublands','Mangroves')
-  biome_name <- gsub(' ','_',biome_name)
+  biome_name <- c('Tropical_and_Subtropical_Moist_Broadleaf_Forests','Tropical_and_Subtropical_Dry_Broadleaf_Forests',
+                  'Tropical_and_Subtropical_Coniferous_Forests','Temperate_Broadleaf_and_Mixed_Forests',
+                  'Temperate_Conifer_Forests','Boreal_Forests_and_Taiga','Tropical_and_Subtropical_Grasslands_Savannas_and_Shrublands',
+                  'Temperate_Grasslands_Savannas_and_Shrublands','Flooded_Grasslands_and_Savannas','Montane_Grasslands_and_Shrublands',
+                  'Tundra','Mediterranean_Forests_Woodlands_and_Scrub','Deserts_and_Xeric_Shrublands','Mangroves')
+  biome_name2 <- c('Tropical_forest','Tropical_forest','Tropical_forest','Temperate_forest','Temperate_forest',
+                   'Boreal_forest','Tropical_grass_savannah','Temperate_grass_savannah','Flooded_grass_savannah',
+                   'Montane_grass_savannah','Tundra','Mediterranean_woodland','Desert','Mangrove')
+  biome_name3 <- c('Forest','Forest','Forest','Forest','Forest','Forest','Savannah','Savannah','Wetland','Savannah',
+                   'Tundra_Desert','Savannah','Tundra_Desert','Wetland')
   biome_key <- data.frame(biome_num,biome_name)
   
   #gotta deal with NAs in points because these spatial frickin geniuses did not.

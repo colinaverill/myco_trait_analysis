@@ -13,10 +13,12 @@ wrap_results_pg <- function(mod, dat){
   n.angio <- nrow(dat[dat$pgf ==  'angio',])
   n.gymno <- nrow(dat[dat$pgf ==  'gymno',])
   #start calculating and naming.
-  to_return <- c(mod.name,effects,error,pval,n.AM,n.EM,n.angio,n.gymno)
+  to_return <- data.frame(t(c(mod.name,effects,error,pval,n.AM,n.EM,n.angio,n.gymno)))
   nm <- c('Intercept',vars[2:length(vars)])
   nm_err <- paste0(nm,'_err')
   nm_p <- paste0(nm,'_p')
-  names(to_return) <- c('model',nm,nm_err,nm_p,'n.AM','n.ECM','n.angio','n.gymno')
+  colnames(to_return) <- c('model',nm,nm_err,nm_p,'n.AM','n.ECM','n.angio','n.gymno')
+  to_return$model <- as.character(to_return$model)
+  to_return[,2:ncol(to_return)] <- lapply(to_return[, 2:ncol(to_return)],function(x) as.numeric(levels(x))[x])
   return(to_return)
 }
