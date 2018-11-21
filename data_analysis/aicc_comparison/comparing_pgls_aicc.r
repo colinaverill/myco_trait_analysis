@@ -36,7 +36,7 @@ for(i in 1:length(traits)){
   if(traits[i] == 'root.L'){
     preds <- c('pgf','mat.c','map.c','biome2') #no nfixers among root chem observations.
   }
-  aic_compare[[i]] <- pgls_step_aicc(y = traits[i], x = preds, data = d, phylogeny = phy, n.cores = n.cores)
+  aic_compare[[i]] <- pgls_step_aicc(y = traits[i], x = preds, data = d, phylogeny = phy, n.cores = n.cores, log = T)
   cat(traits[i],'comparison complete.\n')
 }
 toc()

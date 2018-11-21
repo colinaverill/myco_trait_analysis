@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
+pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
   #register parallel
   registerDoParallel(n.cores)
   
@@ -28,7 +28,12 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
   all.out <- list()
   
   #get reference case.
-  mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat)
+  if(log == F){
+    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat)
+  }
+  if(log == T){
+    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat, log = T)
+  }
   to_return <- data.frame(paste(x, collapse = ','), mod$aicc, NA,1)
   colnames(to_return) <- c('preds','aicc','aicc.diff','aicc_round')
   all.out[[1]] <- to_return
@@ -41,8 +46,13 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
   while(check > 0){
     round.out <- list()
     round.out <- 
-    foreach(k = 1:length(x)) %dopar% { 
-      fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny), silent = T)
+    foreach(k = 1:length(x)) %dopar% {
+      if(log == F){
+        fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny), silent = T)
+      }
+      if(log == T){
+        fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny, log = T), silent = T)
+      }
       if(!(class(fit) == 'try-error')){
         to_return <- data.frame(paste(x[-k],collapse =','), fit$aicc)
         cat('try error in',y,'with',c('MYCO_ASSO',x[-k]),'as predictors. Continuing.') #may not print in foreach loop...

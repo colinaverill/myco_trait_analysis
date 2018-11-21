@@ -3,7 +3,7 @@
 #trait.2 - trait.N are predictors to be included in PGLS model.
 #This function prunes the phylogeny, builds a comparative data object, and fits a PGLS model.
 
-pic_pro <- function(y,x, phylogeny, trait.data, intercept = T){
+pic_pro <- function(y,x, phylogeny, trait.data, intercept = T, log = F){
   #make sure you aren't dealing with data.table.
   trait.data <- as.data.frame(trait.data)
 
@@ -27,6 +27,12 @@ pic_pro <- function(y,x, phylogeny, trait.data, intercept = T){
   linear <- paste0(paste0(to_keep[2:length(to_keep)], sep = '+'), collapse = '')
   linear <- substr(linear,1,nchar(linear)-1) #remove trailing '+'
   formula <- paste((y),'~')
+  if(log == T){
+    formula <- paste0('log(',y,') ~ ')
+    if(y == 'log.LL'){
+      formula <- paste((y),'~')
+    }
+  }
   formula <- paste(formula,linear)
   if(intercept == F){formula <- paste(formula,' - 1')}
   formula <- as.formula(formula)
