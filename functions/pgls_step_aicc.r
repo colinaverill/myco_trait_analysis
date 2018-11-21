@@ -2,12 +2,13 @@
 #' step through all predictors, get aicc scores, remove predictor that generates best aicc improvement.
 #' rinse and repeat until aicc no longer improves.
 #' because mycorrhizal association is the focus of these analyses, it is excluded from aicc predictor removal.
-#' depends on doParallel.
+#' If some combination of predictors breaks PGLS, it will keep running, and this will be reported in output.
+#' depends on doParallel, caper, pic_pro() function.
 #'
-#' @param y 
-#' @param x 
-#' @param phylogeny 
-#' @param data 
+#' @param y          #dependent variable for PGLS.
+#' @param x          #independent variables to select from for PGLS. (MYCO_ASSO default included.)
+#' @param phylogeny  #phylogeny to use.
+#' @param data       #data frame to use.
 #'
 #' @return
 #' @export
@@ -41,9 +42,10 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1){
     round.out <- list()
     round.out <- 
     foreach(k = 1:length(x)) %dopar% { 
-      fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny))
+      fit <- try(pic_pro(y, c('MYCO_ASSO',x[-k]), trait.data = dat, phylogeny = phylogeny), silent = T)
       if(!(class(fit) == 'try-error')){
         to_return <- data.frame(paste(x[-k],collapse =','), fit$aicc)
+        cat('try error in',y,'with',c('MYCO_ASSO',x[-k]),'as predictors. Continuing.') #may not print in foreach loop...
       }
       if(  class(fit) == 'try-error' ){
         to_return <- data.frame("try-error in pgls",NA)

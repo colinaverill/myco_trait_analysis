@@ -13,6 +13,10 @@ wrap_results_lm <- function(mod){
   #start calculating and naming.
   to_return <- c(mod.name,effects,error,pval,n.AM,n.EM,n.angio,n.gymno)
   nm <- c('Intercept',vars[2:length(vars)])
+  if('biome' %in% vars){
+    nm <- names(effects)
+    nm[1:2] <- c('Intercept','MYCO_ASSO')
+  }
   nm_err <- paste0(nm,'_err')
   nm_p <- paste0(nm,'_p')
   to_return <- data.frame(t(to_return))

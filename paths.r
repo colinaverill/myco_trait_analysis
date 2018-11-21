@@ -8,23 +8,26 @@ if(host != 'pecan2'){
 }
 
 #raw trait files.----
-       glop_raw.path <- paste0(data.dir,'Glopnet_2017_10_09.csv')
-   fred_2.0_raw.path <- paste0(data.dir,'FRED2_20180518.csv')
-       ornl_raw.path <- paste0(data.dir,'Traits2.0_2017_07_19.csv')
-        try_raw.path <- paste0(data.dir,'averil_try-request_4024_010818/4024.csv')
-cptd_traits_raw.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Hard Traits.csv')
- cptd_sites_raw.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Sites.csv')
-   cptd_PGF_raw.path <- paste0(data.dir,'/ecy2091-sup-0002-DataS1/PFT data.csv')
-     cptd_names.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Species translations.csv')
-       miat_raw.path <- paste0(data.dir,'miatto_2016.csv')
-       zann_raw.path <- paste0(data.dir,'GlobalWoodinessDatabase.csv')
-       gbif_raw.path <- paste0(data.dir,'species_climate_means_GBIF.csv')
-      nodDB_raw.path <- paste0(data.dir,'nodDB_v1.csv')
-       teow_raw.path <- '/fs/data3/caverill/wwf_ecoregions/official/wwf_terr_ecos.shp'
- brot_trait_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_dat.csv')
-   brot_tax_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_tax.csv')
-    daac651_raw.path <- paste0(data.dir,'litter_decomp_ornl_daac_651/data/litter_quality.txt')
-     
+         glop_raw.path <- paste0(data.dir,'Glopnet_2017_10_09.csv')
+     fred_2.0_raw.path <- paste0(data.dir,'FRED2_20180518.csv')
+         ornl_raw.path <- paste0(data.dir,'Traits2.0_2017_07_19.csv')
+          try_raw.path <- paste0(data.dir,'averil_try-request_4024_010818/4024.csv')
+  cptd_traits_raw.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Hard Traits.csv')
+   cptd_sites_raw.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Sites.csv')
+     cptd_PGF_raw.path <- paste0(data.dir,'/ecy2091-sup-0002-DataS1/PFT data.csv')
+       cptd_names.path <- paste0(data.dir,'ecy2091-sup-0002-DataS1/Species translations.csv')
+         miat_raw.path <- paste0(data.dir,'miatto_2016.csv')
+         zann_raw.path <- paste0(data.dir,'GlobalWoodinessDatabase.csv')
+         gbif_raw.path <- paste0(data.dir,'species_climate_means_GBIF.csv')
+        nodDB_raw.path <- paste0(data.dir,'nodDB_v1.csv')
+         teow_raw.path <- '/fs/data3/caverill/wwf_ecoregions/official/wwf_terr_ecos.shp'
+   brot_trait_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_dat.csv')
+     brot_tax_raw.path <- paste0(data.dir,'BROT_2.0_database/BROT2_tax.csv')
+      daac651_raw.path <- paste0(data.dir,'litter_decomp_ornl_daac_651/data/litter_quality.txt')
+ sun_PNAS2018_raw.path <- paste0(data.dir,'Sun_2018_PNAS.csv')
+   sk_nov2018_raw.path <- paste0(data.dir,'sk_search_Nov_2018.csv')
+    
+    
 #raw mycorrhizal trait files.----
 dir <- data.dir
          e093_myco_raw.path <- paste0(dir,'myco_db.csv')
@@ -34,7 +37,8 @@ dir <- data.dir
          opik_myco_raw.path <- paste0(dir,'geb12582-sup-0007-suppinfo7.csv')
 harley_harley_myco_raw.path <- paste0(dir,'Harley_Harley_2018_01_11.csv')
     poaceae_genera_raw.path <- paste0(dir,'poaceae_genera_wikipedia.rds')
-
+brundrett_tedersoo_families.path <- paste0(dir,'Brundrett_Tedersoo_MycoPlantFamilies_2018_11_19.csv')
+    
 #phylogeny files.----
   phylogeny_raw.path <- paste0(data.dir,'colin_tree.tre')
 #phylogeny_clean.path <- paste0(data.dir,'colin_tree_clean.tre') #never mind. Once we clean up phyit wont load with read.tree().
@@ -49,6 +53,8 @@ harley_harley_myco_raw.path <- paste0(dir,'Harley_Harley_2018_01_11.csv')
  harley_harley_myco_clean.path <- paste0(dir,'harley_harley_myco_clean.rds')
 averill_kivlin_myco_clean.path <- paste0(dir,'averill_kivlin_myco_clean.rds')
         myco_genera_clean.path <- paste0(dir,'myco_genera_clean.rds')
+        sun_PNAS2018_clean.path <- paste0(dir,'sun_PNAS2018_clean.rds')
+          sk_nov2018_clean.path <- paste0(dir,'sk_nov2018_clean.rds')
 
 #C|ean woodiness files for merging.----
 fred_wood_clean.path <- paste0(dir,'fred_wood_clean.rds')
@@ -113,8 +119,12 @@ lm_pgls_means_myc.pgf_myco.nfix.int_models.path <- paste0(dir,'lm_pgls_means_myc
 lm_pgls_means_myc.pgf_myco.nfix.int_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_myco.nfix.int_summary.rds')
 biome_aicc_pgls_analysis.path <- paste0(dir,'biome_aicc_pgls_analysis.rds')
 aicc_model_comparison_plgs.path <- paste0(dir,'aicc_model_comparison_plgs.path')
+pgls_models_summary_aicc.path <- paste0(dir,'pgls_models_summary_aicc.rds')
+  lm_models_summary_aicc.path <- paste0(dir,  'lm_models_summary_aicc.rds')
+  phylo_estimated_traits.path <- paste0(dir,'phylo_estimated_traits.rds')
 
 #Figure paths.----
 dir <- 'figures/'
 var_decomp_figure.path <- paste0(dir,'variance_decomp.png')
 sample_map_figure.path <- paste0(dir,'global_sampling_map.png')
+phylogeny_figure.path <- paste0(dir,'phylogeny_figure.png')

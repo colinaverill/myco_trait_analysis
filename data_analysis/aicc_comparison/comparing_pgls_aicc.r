@@ -32,9 +32,9 @@ aic_compare <- list()
 traits <- c('Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots','log.LL','root.L')
 tic()
 for(i in 1:length(traits)){
-  preds <- c('pgf','nfix','mat.c','map.c','biome')
+  preds <- c('pgf','nfix','mat.c','map.c','biome2')
   if(traits[i] == 'root.L'){
-    preds <- c('pgf','mat.c','map.c','biome') #no nfixers among root chem observations.
+    preds <- c('pgf','mat.c','map.c','biome2') #no nfixers among root chem observations.
   }
   aic_compare[[i]] <- pgls_step_aicc(y = traits[i], x = preds, data = d, phylogeny = phy, n.cores = n.cores)
   cat(traits[i],'comparison complete.\n')

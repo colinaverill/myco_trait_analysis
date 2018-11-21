@@ -35,7 +35,7 @@ wwf_ecoregion_extract <- function(latitude, longitude,
                    'Montane_grass_savannah','Tundra','Mediterranean_woodland','Desert','Mangrove')
   biome_name3 <- c('Forest','Forest','Forest','Forest','Forest','Forest','Savannah','Savannah','Wetland','Savannah',
                    'Tundra_Desert','Savannah','Tundra_Desert','Wetland')
-  biome_key <- data.frame(biome_num,biome_name)
+  biome_key <- data.frame(biome_num,biome_name,biome_name2)
   
   #gotta deal with NAs in points because these spatial frickin geniuses did not.
   to_assign <- data.frame(longitude, latitude)
@@ -50,13 +50,13 @@ wwf_ecoregion_extract <- function(latitude, longitude,
   output <- sp::over(pts, layer)                 #extract the layer.
   output <- data.frame(cbind(yup, output))       #add in lat/long and unq value to sort.
   output <- plyr::rbind.fill(output, nope)       #add back in the NAs.
-  output <- output[order(output$unq),]           #reorder the damn thing.
-  output$unq <- NULL
   
   #merge in the real biome names.
   output <- merge(output, biome_key,
                   by.x='BIOME',
                   by.y='biome_num',
                   all.x = T)
+  output <- output[base::order(output$unq),]     #reorder the damn thing.
+  #output$unq <- NULL
   return(output)                                 #send it.
 }

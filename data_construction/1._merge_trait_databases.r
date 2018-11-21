@@ -23,9 +23,11 @@ miat <- readRDS(miat_inter.path) #no intra-specific opportunity
 bien <- readRDS(bien_intra.path)
 brot <- readRDS(brot_intra.path)
 d651 <- readRDS(daac651_intra.path)
+sunP <- readRDS(sun_PNAS2018_clean.path)
+skNo <- readRDS(sk_nov2018_clean.path)
 
 #merge all intra-specific observaitons.----
-traits <- plyr::rbind.fill(glop,fred,ornl,cptd,miat,bien,brot,d651,try)
+traits <- plyr::rbind.fill(glop,fred,ornl,cptd,miat,bien,brot,d651,sunP,skNo,try)
 traits$unique <- seq(1:nrow(traits))
 
 #Some of these trait databases are in try. Solution:

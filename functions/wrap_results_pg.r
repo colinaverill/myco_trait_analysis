@@ -15,6 +15,10 @@ wrap_results_pg <- function(mod, dat){
   #start calculating and naming.
   to_return <- data.frame(t(c(mod.name,effects,error,pval,n.AM,n.EM,n.angio,n.gymno)))
   nm <- c('Intercept',vars[2:length(vars)])
+  if('biome' %in% vars){
+    nm <- names(effects)
+    nm[1:2] <- c('Intercept','MYCO_ASSO')
+  }
   nm_err <- paste0(nm,'_err')
   nm_p <- paste0(nm,'_p')
   colnames(to_return) <- c('model',nm,nm_err,nm_p,'n.AM','n.ECM','n.angio','n.gymno')
