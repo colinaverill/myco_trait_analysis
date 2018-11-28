@@ -24,6 +24,22 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
   dat <- dat[,keep]
   dat <- dat[complete.cases(dat),]
   
+  #any variables with zero variation? drop these.
+  #unq <- list()
+  #drop.names <- list()
+  #for(i in 1:ncol(dat)){
+  #  unq[[i]] <- length(unique(dat[,i]))
+  #  drop.names[[i]] <- colnames(dat)[i]
+  #}
+  #unq <- unlist(unq)
+  #drop.names <- unlist(drop.names)
+  #drop <- ifelse(unq == 1, F, T)
+  #dat <- dat[,drop]
+  #drop.names <- drop.names[!drop]
+  
+  #get these columns out of the predictor matrix.
+  x <- x[!x %in% drop.names]
+  
   #setoutput aicc output list.
   all.out <- list()
   
