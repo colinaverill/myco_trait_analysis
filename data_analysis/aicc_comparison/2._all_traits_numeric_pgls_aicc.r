@@ -56,6 +56,7 @@ options(na.action='na.omit') #important!
 output <- list()
 for(i in 1:length(y)){
   output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12, log = T)
+  cat(y[i],' aicc comparison complete.\n')
 }
 
 #Save output.----
