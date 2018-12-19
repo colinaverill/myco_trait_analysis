@@ -3,7 +3,7 @@
 #trait.2 - trait.N are predictors to be included in PGLS model.
 #This function prunes the phylogeny, builds a comparative data object, and fits a PGLS model.
 
-pic_pro <- function(y,x, phylogeny, trait.data, intercept = T, log = F){
+pic_pro <- function(y,x, phylogeny, trait.data, intercept = T, log = F, interaction = NA, lambda = 'ML'){
   #make sure you aren't dealing with data.table.
   trait.data <- as.data.frame(trait.data)
 
@@ -26,9 +26,13 @@ pic_pro <- function(y,x, phylogeny, trait.data, intercept = T, log = F){
   #Cook up formula for PGLS
   linear <- paste0(paste0(to_keep[2:length(to_keep)], sep = '+'), collapse = '')
   linear <- substr(linear,1,nchar(linear)-1) #remove trailing '+'
+  if(!is.na(interaction)){
+    insert <- paste(interaction, collapse = '+') 
+    linear <- paste0(linear, '+', insert)
+  }
   formula <- paste((y),'~')
   if(log == T){
-    formula <- paste0('log(',y,') ~ ')
+    formula <- paste0('log10(',y,') ~ ')
     if(y == 'log.LL'){
       formula <- paste((y),'~')
     }
@@ -38,7 +42,10 @@ pic_pro <- function(y,x, phylogeny, trait.data, intercept = T, log = F){
   formula <- as.formula(formula)
   
   #run PGLS, return output
-  model <- pgls(formula, data = c.data, lambda = 'ML')
+  model <- try(pgls(formula, data = c.data, lambda = lambda))
+  #Sometimes the above fails. If that's the case just set lambda to 1.
+  if(class(model) == 'try-error'){
+    model <- pgls(formula, data = c.data, lambda = 1)
+  }
   return(model)
-  cat('cool job!')
-}
+} #end function.

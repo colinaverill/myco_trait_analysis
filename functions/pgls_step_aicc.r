@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
+pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F, lambda = 'ML'){
   #register parallel
   registerDoParallel(n.cores)
   
@@ -25,19 +25,26 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
   dat <- dat[complete.cases(dat),]
   
   #any variables with zero variation? drop these.
-  #unq <- list()
-  #drop.names <- list()
-  #for(i in 1:ncol(dat)){
-  #  unq[[i]] <- length(unique(dat[,i]))
-  #  drop.names[[i]] <- colnames(dat)[i]
-  #}
-  #unq <- unlist(unq)
-  #drop.names <- unlist(drop.names)
-  #drop <- ifelse(unq == 1, F, T)
-  #dat <- dat[,drop]
-  #drop.names <- drop.names[!drop]
+  unq <- list()
+  drop.names <- list()
+  drop.frame <- dat[, which(names(dat) %in% x)]
+  for(i in 1:ncol(drop.frame)){
+           unq[[i]] <- length(unique(drop.frame[,i]))
+    drop.names[[i]] <- colnames(drop.frame)[i]
+  }
+  unq <- unlist(unq)
+  drop.names <- unlist(drop.names)
+  drop <- ifelse(unq == 1, F, T)
+  drop.names <- drop.names[!drop]
   
   #get these columns out of the predictor matrix.
+  x <- x[!x %in% drop.names]
+  
+  #check for columns with identical sets of values.
+  #if there are, drop the last one. Its usually in the interactions, which I put at the end.
+  check <- dat[,colnames(dat) %in% x]
+  id <- caret::findLinearCombos(check)
+  drop.names <- colnames(check)[id$remove]
   x <- x[!x %in% drop.names]
   
   #setoutput aicc output list.
@@ -45,10 +52,10 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
   
   #get reference case.
   if(log == F){
-    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat)
+    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat, lambda = lambda)
   }
   if(log == T){
-    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat, log = T)
+    mod <- pic_pro(y=y, x=c('MYCO_ASSO',x), phylogeny = phylogeny, trait.data = dat, lambda = lambda, log = T)
   }
   to_return <- data.frame(paste(x, collapse = ','), mod$aicc, NA,1)
   colnames(to_return) <- c('preds','aicc','aicc.diff','aicc_round')
@@ -71,10 +78,10 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
       }
       if(!(class(fit) == 'try-error')){
         to_return <- data.frame(paste(x[-k],collapse =','), fit$aicc)
-        cat('try error in',y,'with',c('MYCO_ASSO',x[-k]),'as predictors. Continuing.') #may not print in foreach loop...
       }
       if(  class(fit) == 'try-error' ){
         to_return <- data.frame("try-error in pgls",NA)
+        cat('try error in',y,'with',c('MYCO_ASSO',x[-k]),'as predictors. Continuing.') #may not print in foreach loop...
       }
       colnames(to_return)  <- c('preds','aicc')
       return(to_return)
@@ -98,5 +105,11 @@ pgls_step_aicc <- function(y, x, phylogeny, data, n.cores = 1, log = F){
   final_return <- list(all.out,c('MYCO_ASSO',x))
   names(final_return) <- c('aicc_comparisons','win_preds')
   cat("best model includes",paste(c('MYCO_ASSO',x), collapse = ' , '),'as predictors.\n')
+  if(length(drop.names) > 0){
+    cat(paste0('The variables ',
+               paste(drop.names,collapse = ', '),
+               ' were not included in analysis, as there was no variation present in these predictors.')
+        )    
+  }
   return(final_return)
 }

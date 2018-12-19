@@ -56,9 +56,6 @@ setnames(fred,
 fred <- fred[,.(Species, Nroots, Proots, root_lifespan, latitude, longitude, source, doi)]
 fred <- fred[!(is.na(Nroots) & is.na(Proots) & is.na(root_lifespan)),]
 
-#assign woody status.----
-#fred[,woody := Plant.growth.form %in% c('Shrub','shrub','shrub/tree','subshrub/liana','tree','liana') + 0L]
-#fred[Plant.growth.form %in% c('',' ', 'F00032','Plant growth form'), woody := NA]
 
 #save intra-specific product.----
 fred.intra.out <- fred

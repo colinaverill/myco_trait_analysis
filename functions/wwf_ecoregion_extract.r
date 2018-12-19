@@ -35,7 +35,8 @@ wwf_ecoregion_extract <- function(latitude, longitude,
                    'Montane_grass_savannah','Tundra','Mediterranean_woodland','Desert','Mangrove')
   biome_name3 <- c('Forest','Forest','Forest','Forest','Forest','Forest','Savannah','Savannah','Wetland','Savannah',
                    'Tundra_Desert','Savannah','Tundra_Desert','Wetland')
-  biome_key <- data.frame(biome_num,biome_name,biome_name2)
+       forest <- ifelse(biome_name3 == 'Forest',1,0)
+  biome_key <- data.frame(biome_num,biome_name,biome_name2,forest)
   
   #gotta deal with NAs in points because these spatial frickin geniuses did not.
   to_assign <- data.frame(longitude, latitude)

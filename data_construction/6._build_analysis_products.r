@@ -126,11 +126,20 @@ d <- merge(d,pgf, all.x=T)
 #assign biome.----
 biome <- wwf_ecoregion_extract(d$latitude, d$longitude)
 biome <- data.table(biome)
-d <- cbind(d, biome[,.(ECO_NAME,biome_name,biome_name2)])
+d <- cbind(d, biome[,.(ECO_NAME,biome_name,biome_name2,forest)])
+
+d$biome_name3 <- NA
+d$biome_name3 <- ifelse(d$latitude >=  22.44 & d$latitude <  50   , 'a_temperate',d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude <= -22.44 & d$latitude > -50   , 'a_temperate',d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude  <  22.44 & d$latitude > -24.44, 'b_tropical' ,d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude >= 50     | d$latitude <= -50  , 'c_boreal'   ,d$biome_name3)
 
 #grab mat and map based on worldclim.----
 clim <- worldclim2_grab(d$latitude, d$longitude)
 d <- cbind(d,clim)
+
+#fix root-lifespan to be months rather than days.----
+d$root_lifespan <- d$root_lifespan/30
 
 #Subset to match study inclusion criteria.----
 pre_subset_intra_out <- d
@@ -163,6 +172,8 @@ q.traits <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','ro
 d.traits <- c('tpl.Species','Species','MYCO_ASSO','woodiness','pgf','nfix','nfix2')
 #grab most frequent biome, accounts for "ties".
 #biome_out <- table(d[,.(tpl.Species,biome_name)])
+
+#merge in most frequeny biome at the species level.----
 library(dplyr)
 biome_out1 <-  as.data.frame(
     d %>%
@@ -184,12 +195,35 @@ biome_out2 <-  as.data.frame(
     dplyr::select(-n))
 colnames(biome_out2) <- c('tpl.Species','biome2')
 biome_out2[] <- lapply(biome_out2, as.character)
+biome_out3 <-  as.data.frame(
+  d %>%
+    dplyr::count(tpl.Species, biome_name3) %>%
+    dplyr::group_by(tpl.Species) %>%
+    dplyr::filter(n == max(n)) %>%
+    dplyr::mutate(r = row_number()) %>%
+    tidyr::spread(r, biome_name3) %>%
+    dplyr::select(-n))
+colnames(biome_out3) <- c('tpl.Species','biome3')
+biome_out3[] <- lapply(biome_out3, as.character)
+forest_out <-  as.data.frame(
+  d %>%
+    dplyr::count(tpl.Species, forest) %>%
+    dplyr::group_by(tpl.Species) %>%
+    dplyr::filter(n == max(n)) %>%
+    dplyr::mutate(r = row_number()) %>%
+    tidyr::spread(r, forest) %>%
+    dplyr::select(-n))
+colnames(forest_out) <- c('tpl.Species','forest')
 detach('package:dplyr')
 #There are only 2 species with equally frequent biome categorizations, and they don't really matter.
 #Just set everything to the first biome column.
 biome_out1 <- biome_out1[,c('tpl.Species','biome1')]
 biome_out2 <- biome_out2[,c('tpl.Species','biome2')]
+biome_out3 <- biome_out3[,c('tpl.Species','biome3')]
+forest_out <- forest_out[,c('tpl.Species','forest')]
 biome_out <- merge(biome_out1, biome_out2)
+biome_out <- merge(biome_out , biome_out3)
+biome_out <- merge(biome_out , forest_out)
 
 #get quantitative trait means.
 d <- data.table(d)

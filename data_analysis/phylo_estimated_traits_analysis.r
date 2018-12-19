@@ -15,21 +15,30 @@ phy <- multi2di(phy) #deal with polytomies.
 setnames(d,'root_lifespan','root.L')
 
 
-Ngreen <- phylo_predicted(species = d$Species, trait = d$Ngreen, phy = phy, name = 'Ngreen')
-Nsenes <- phylo_predicted(species = d$Species, trait = d$Nsenes, phy = phy, name = 'Nsenes')
-Nroots <- phylo_predicted(species = d$Species, trait = d$Nroots, phy = phy, name = 'Nroots')
-Pgreen <- phylo_predicted(species = d$Species, trait = d$Pgreen, phy = phy, name = 'Pgreen')
-Psenes <- phylo_predicted(species = d$Species, trait = d$Psenes, phy = phy, name = 'Psenes')
-Proots <- phylo_predicted(species = d$Species, trait = d$Proots, phy = phy, name = 'Proots')
+Ngreen <- phylo_predicted(species = d$Species, trait = log10(d$Ngreen), phy = phy, name = 'Ngreen')
+Nsenes <- phylo_predicted(species = d$Species, trait = log10(d$Nsenes), phy = phy, name = 'Nsenes')
+Nroots <- phylo_predicted(species = d$Species, trait = log10(d$Nroots), phy = phy, name = 'Nroots')
+Pgreen <- phylo_predicted(species = d$Species, trait = log10(d$Pgreen), phy = phy, name = 'Pgreen')
+Psenes <- phylo_predicted(species = d$Species, trait = log10(d$Psenes), phy = phy, name = 'Psenes')
+Proots <- phylo_predicted(species = d$Species, trait = log10(d$Proots), phy = phy, name = 'Proots')
 log.LL <- phylo_predicted(species = d$Species, trait = d$log.LL, phy = phy, name = 'log.LL')
-root.l <- phylo_predicted(species = d$Species, trait = d$root.L, phy = phy, name = 'root.L')
+root.l <- phylo_predicted(species = d$Species, trait = log10(d$root.L), phy = phy, name = 'root.L')
 
-#merge with trait data
+
+#Grab just log10 trnasformed predicted vs. observed values.----
 to_merge <- list(Ngreen, Nsenes, Nroots, Pgreen, Psenes, Proots, log.LL, root.l)
-out <- d
+d <- data.table(d)
+d <- d[,.(Species,MYCO_ASSO,Ngreen,Nsenes,Nroots,Pgreen,Psenes,Proots,log.LL,root.L)]
+#log10 transform values, save for log.LL
+d_keep <- d[,.(Species,MYCO_ASSO,log.LL)]
+d_trans <- d[,.(Ngreen,Nsenes,Nroots,Pgreen,Psenes,Proots,root.L)]
+d_trans <- apply(d_trans, 2, log10)
+d <- data.frame(d_keep,d_trans)
+d <- as.data.frame(d)
+
 for(i in 1:length(to_merge)){
-  out <- merge(out,to_merge[[i]], all.x=T)
+  d <- merge(d, to_merge[[i]], all.x = T)
 }
 
 #save trait data with phylogenetic predictions for each observed trait.
-saveRDS(out, out.path)
+saveRDS(d, out.path)

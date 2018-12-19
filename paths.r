@@ -42,6 +42,7 @@ brundrett_tedersoo_families.path <- paste0(dir,'Brundrett_Tedersoo_MycoPlantFami
     
 #phylogeny files.----
   phylogeny_raw.path <- paste0(data.dir,'colin_tree.tre')
+  phylogeny_raw.path <- paste0(data.dir,'colin_2018-12--2.tre')
 #phylogeny_clean.path <- paste0(data.dir,'colin_tree_clean.tre') #never mind. Once we clean up phyit wont load with read.tree().
     
     
@@ -109,20 +110,27 @@ intra_specific_pre.subset_data.path <- paste0(data.dir, 'intra_specific_pre.subs
 dir <- paste0(data.dir,'analysis_output/')
 system(paste0('mkdir -p ',dir))
 variance_decomp_output.path <- paste0(dir,'variance_decomposition.rds')
- lm_pgls_means_myc.pgf_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_models.rds')
-lm_pgls_means_myc.pgf_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_summary.rds')
-lm_pgls_means_myc.pgf.clim_models.path <- paste0(dir,'lm_pgls_means_myc.pgf.clim_models.rds')
-lm_pgls_means_myc.pgf.clim_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf.clim_summary.rds')
-lm_pgls_means_myc.pgf.gbif_models.path <- paste0(dir,'lm_pgls_means_myc.pgf.gbif_models.rds')
-lm_pgls_means_myc.pgf.gbif_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf.gbif_summary.rds')
 lm_pgls_means_myc.pgf_merged.clim_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_models.rds')
 lm_pgls_means_myc.pgf_merged.clim_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_summary.rds')
-lm_pgls_means_myc.pgf_myco.nfix.int_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_myco.nfix.int_models.rds')
-lm_pgls_means_myc.pgf_myco.nfix.int_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_myco.nfix.int_summary.rds')
+lm_pgls_means_myc.pgf_merged.clim_models_NO_BIOME.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_models_NO_BIOME.rds')
+lm_pgls_means_myc.pgf_merged.clim_summary_NO_BIOME.path <- paste0(dir,'lm_pgls_means_myc.pgf_merged.clim_summary_NO_BIOME.rds')
+lm_pgls_means_myc.pgf_gbif_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_gbif_models.rds')
+lm_pgls_means_myc.pgf_gbif_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_gbif_summary.rds')
+lm_pgls_means_myc.pgf_wc2_models.path <- paste0(dir,'lm_pgls_means_myc.pgf_wc2_models.rds')
+lm_pgls_means_myc.pgf_wc2_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_wc2_summary.rds')
+lm_pgls_means_myc.biome3_models.path <- paste0(dir,'lm_pgls_means_myc.biome3_models.rds')
+lm_pgls_means_myc.biome3_summary.path <- paste0(dir,'lm_pgls_means_myc.biome3_summary.rds')
+lm_pgls_means_myc.biome3_interaction_models.path <- paste0(dir,'lm_pgls_means_myc.biome3_interaction_models.rds')
+
+
+#AICC files.
 biome_aicc_pgls_analysis.path <- paste0(dir,'biome_aicc_pgls_analysis.rds')
 aicc_model_comparison_plgs.path <- paste0(dir,'aicc_model_comparison_plgs.path')
 pgls_models_summary_aicc.path <- paste0(dir,'pgls_models_summary_aicc.rds')
   lm_models_summary_aicc.path <- paste0(dir,  'lm_models_summary_aicc.rds')
+aicc_lat_interactions_biome_pgls.path <- paste0(dir,'aicc_lat_interactions_biome_pgls.rds')
+
+#phylo estimated traits files.
   phylo_estimated_traits.path <- paste0(dir,'phylo_estimated_traits.rds')
 
 #Figure paths.----
@@ -130,3 +138,6 @@ dir <- 'figures/'
 var_decomp_figure.path <- paste0(dir,'variance_decomp.png')
 sample_map_figure.path <- paste0(dir,'global_sampling_map.png')
 phylogeny_figure.path <- paste0(dir,'phylogeny_figure.png')
+lm_pgls_effects_figure.path <- paste0(dir,'lm_vs_pgls_effects_figure.png')
+pgls_model_parameter_table.path <- paste0(dir,'pgls_model_parameter_table.csv')
+phylo_estimated_traits_figure.path <- paste0(dir,'phylo_est_traits.png')
