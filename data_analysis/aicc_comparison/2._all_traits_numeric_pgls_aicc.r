@@ -48,15 +48,22 @@ d$myco_boreal   <- d$MYCO_ASSO * d$biome3c_boreal
 #get predictor names.----
 not_preds <- c('Species','Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root.L')
 y <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root.L')
+y <- c('Proots','log.LL','root.L') #testing a subset where this hung recently.
 preds <- colnames(d)
 preds <- preds[!(preds %in% not_preds)]
 
-#test function.----
+#loop function over traits.----
 options(na.action='na.omit') #important!
 output <- list()
 for(i in 1:length(y)){
-  output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12, log = T)
-  cat(y[i],' aicc comparison complete.\n')
+  tic()
+  if(y[i] == 'log.LL'){
+    output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12)
+  }
+  if(y[i] != 'log.LL'){
+    output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12, log = T)
+  }
+  cat(y[i],'aicc comparison complete.\n');toc()
 }
 
 #Save output.----

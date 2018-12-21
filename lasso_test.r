@@ -1,6 +1,8 @@
 #testing lasso procedure.
+rm(list=ls())
 source('paths.r')
-R.utils::sourceDirectory('functions')
+library(caper)
+library(glmnet)
 
 #load data.----
 d <- readRDS(inter_specific_analysis_data.path)
@@ -28,23 +30,13 @@ d$Nresor <- ifelse(d$Nresor == 0, d$Nresor == 0.01, d$Nresor)
 d$Presor <- ifelse(d$Presor == 0, d$Nresor == 0.01, d$Nresor)
 
 
-#Grab predictors.----
-d <- data.table::data.table(d)
-preds <- d[,.(Ngreen,MYCO_ASSO,biome3, pgf, nfix, mat.c, map.c)]
-preds <- preds[complete.cases(preds),]
-y <- preds$Ngreen
-x <- preds[,2:ncol(preds)]
-x <- as.data.frame(x)
-x[i] <- lapply(x[sapply(x, is.character)], as.factor) #convert character to factor vectors.
-x.fac <- x[,sapply(x, is.factor)] #grab factors.
-x.num <- x[,sapply(x, is.numeric)]
-model.string <- paste(colnames(x.fac), collapse = '+')
-x_train <- model.matrix(as.formula(model.string), x.fac)
-
-#Find best model N green.
-test <- glmnet::cv.glmnet(x = as.matrix(x.num), y = y, alpha = 1) 
-c <- coef(test, s = "lambda.min", exact=T)
+#Actualy working example that picks variables.
+#subset data.
+dat <- d[1:200,c('Ngreen','mat.c','map.c')]
+dat <- dat[complete.cases(dat),]
+#fit lasso.
+glmnet1<-cv.glmnet(x = as.matrix(dat[,c('mat.c','map.c')]), dat$Ngreen,type.measure='mse')
+c<-coef(glmnet1,s='lambda.min',exact=TRUE)
 inds<-which(c!=0)
 variables<-row.names(c)[inds]
-variables<-variables[variables %ni% '(Intercept)']
-
+variables<-variables[!(variables %in% '(Intercept)')]
