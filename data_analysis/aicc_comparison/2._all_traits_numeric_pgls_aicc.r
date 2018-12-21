@@ -58,10 +58,10 @@ output <- list()
 for(i in 1:length(y)){
   tic()
   if(y[i] == 'log.LL'){
-    output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12)
+    output[[i]] <- try(pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12))
   }
   if(y[i] != 'log.LL'){
-    output[[i]] <- pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12, log = T)
+    output[[i]] <- try(pgls_step_aicc(y = y[i], x = preds, data = d, phylogeny = phy, n.cores = 12, log = T))
   }
   cat(y[i],'aicc comparison complete.\n');toc()
 }

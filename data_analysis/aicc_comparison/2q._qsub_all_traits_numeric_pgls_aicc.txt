@@ -32,7 +32,7 @@
 #
 #
 # load necessary modules 
-module load R/3.4.0
+module load R/3.4.3
 #
 # cd into directory, for safety purposes
 cd /projectnb/talbot-lab-data/caverill/myco_trait_analysis
