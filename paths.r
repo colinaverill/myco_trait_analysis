@@ -130,6 +130,7 @@ pgls_models_summary_aicc.path <- paste0(dir,'pgls_models_summary_aicc.rds')
   lm_models_summary_aicc.path <- paste0(dir,  'lm_models_summary_aicc.rds')
 aicc_lat_interactions_biome_pgls.path <- paste0(dir,'aicc_lat_interactions_biome_pgls.rds')
 aicc_lat.forest_interactions_biome_pgls.path <- paste0(dir,'aicc_lat.forest_interactions_biome_pgls.rds')
+aicc_lat_interactions_pgls.path <- paste0(dir,'aicc_lat_interactions_pgls.rds')
 
 #phylo estimated traits files.
   phylo_estimated_traits.path <- paste0(dir,'phylo_estimated_traits.rds')
