@@ -178,11 +178,11 @@ intra.out <- d
 
 #get interspecific output.----
 q.traits <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root_lifespan','mat','map','gbif_temp','gbif_precip')
-d.traits <- c('tpl.Species','Species','MYCO_ASSO','woodiness','pgf','nfix','nfix2')
+d.traits <- c('tpl.Species','tpl.Family','Species','MYCO_ASSO','woodiness','pgf','nfix','nfix2')
 #grab most frequent biome, accounts for "ties".
 #biome_out <- table(d[,.(tpl.Species,biome_name)])
 
-#merge in most frequeny biome at the species level.----
+#merge in most frequently biome at the species level.----
 library(dplyr)
 biome_out1 <-  as.data.frame(
     d %>%

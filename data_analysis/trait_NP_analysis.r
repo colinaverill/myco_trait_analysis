@@ -35,13 +35,25 @@ predictors <- 'MYCO_ASSO + MYCO_ASSO:biome_bore + MYCO_ASSO:biome_trop + biome_t
 traits <- c('greenNP','senesNP','rootsNP')
 
 #Fit models.----
-output <- list()
+#log10 models.
+output.log10 <- list()
 for(i in 1:length(traits)){
   form <- as.formula(paste0('log10(',traits[i],') ~ ',predictors))
-   fit <- pgls_glmm(form, d, phy)
-   output[[i]] <- fit
+  fit <- pgls_glmm(form, d, phy)
+   output.log10[[i]] <- fit
 }
-names(output) <- traits
+names(output.log10) <- traits
+
+#untransformed.
+output.reg <- list()
+for(i in 1:length(traits)){
+  form <- as.formula(paste0('(',traits[i],') ~ ',predictors))
+  fit <- pgls_glmm(form, d, phy)
+  output.reg[[i]] <- fit
+}
+names(output.reg) <- traits
 
 #save output.----
+output <- list(output.log10,output.reg)
+names(output) <- c('log10','reg')
 saveRDS(output, output.path)
