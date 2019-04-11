@@ -92,6 +92,8 @@ d$nfix2 <- ifelse(d$tpl.Genus %in% nodDB[nfix2 == 1,]$genus, 1, 0)
 #Assign gbif climate.----
 gbif$X <- NULL
 setnames(gbif,c('species','temp','precip'),c('Species','gbif_temp','gbif_precip'))
+#convert gbig precip from cm to mm.
+gbif$gbif_precip <- gbif$gbif_precip * 10
 gbif$tpl.Species <- gbif$Species
 d <- spp_tpl.spp_merge(d, gbif)
 
@@ -129,10 +131,15 @@ biome <- data.table(biome)
 d <- cbind(d, biome[,.(ECO_NAME,biome_name,biome_name2,forest)])
 
 d$biome_name3 <- NA
-d$biome_name3 <- ifelse(d$latitude >=  22.44 & d$latitude <  50   , 'a_temperate',d$biome_name3)
-d$biome_name3 <- ifelse(d$latitude <= -22.44 & d$latitude > -50   , 'a_temperate',d$biome_name3)
-d$biome_name3 <- ifelse(d$latitude  <  22.44 & d$latitude > -24.44, 'b_tropical' ,d$biome_name3)
-d$biome_name3 <- ifelse(d$latitude >= 50     | d$latitude <= -50  , 'c_boreal'   ,d$biome_name3)
+#d$biome_name3 <- ifelse(d$latitude >=  23.44 & d$latitude <  50   , 'a_temperate',d$biome_name3)
+#d$biome_name3 <- ifelse(d$latitude <= -23.44 & d$latitude > -50   , 'a_temperate',d$biome_name3)
+#d$biome_name3 <- ifelse(d$latitude  <  23.44 & d$latitude > -23.44, 'b_tropical' ,d$biome_name3)
+#d$biome_name3 <- ifelse(d$latitude >= 50     | d$latitude <= -50  , 'c_boreal'   ,d$biome_name3)
+#including sub-trpocs in tropics.
+d$biome_name3 <- ifelse(d$latitude >=  30 & d$latitude <   50, 'a_temperate',d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude <= -30 & d$latitude >  -50, 'a_temperate',d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude  <  30 & d$latitude >  -30, 'b_tropical' ,d$biome_name3)
+d$biome_name3 <- ifelse(d$latitude >=  50 | d$latitude <= -50, 'c_boreal'   ,d$biome_name3)
 
 #grab mat and map based on worldclim.----
 clim <- worldclim2_grab(d$latitude, d$longitude)
@@ -148,19 +155,21 @@ d <- d[MYCO_ASSO %in% c('AM','ECM')] #Only AM and ECM species.
 d <- d[!is.na(pgf),]                 #Analysis requires growth-form assignment (angio/gymno)
 d <- d[woodiness == 'W',]            #Only woody species (herbaceous are all AM in this data set).
 #set some reasonable constraint on tissue element concentrations.
-#These constraints only affect green leaf elements, and remove less than 0.5% of observations.
+#These constraints only affect elements, and remove less than 0.6% of observations.
 nrow(d[!is.na(Ngreen) & Ngreen < 200])/nrow(d[!is.na(Ngreen)])
 nrow(d[!is.na(Pgreen) & Pgreen <  20])/nrow(d[!is.na(Pgreen)])
 nrow(d[!is.na(Nsenes) & Nsenes < 200])/nrow(d[!is.na(Nsenes)])
 nrow(d[!is.na(Psenes) & Psenes < 200])/nrow(d[!is.na(Psenes)])
 nrow(d[!is.na(Nroots) & Nroots < 200])/nrow(d[!is.na(Nroots)])
 nrow(d[!is.na(Proots) & Proots < 200])/nrow(d[!is.na(Proots)])
+nrow(d[!is.na(log.LL) & log.LL < 2.4])/nrow(d[!is.na(log.LL)]) #2.4 coresponds to less than 250 months, consistent with Wright 2004 LES.
 d <- d[Ngreen < 200 & Ngreen > 0 | is.na(Ngreen),]
-d <- d[Nsenes < 200 & Nsenes > 0  | is.na(Nsenes),]
-d <- d[Nroots < 200 & Nroots > 0  | is.na(Nroots),]
-d <- d[Pgreen <  20 & Pgreen > 0  | is.na(Pgreen),]
-d <- d[Psenes <  20 & Psenes > 0  | is.na(Psenes),]
-d <- d[Proots <  20 & Proots > 0  | is.na(Proots),]
+d <- d[Nsenes < 200 & Nsenes > 0 | is.na(Nsenes),]
+d <- d[Nroots < 200 & Nroots > 0 | is.na(Nroots),]
+d <- d[Pgreen <  20 & Pgreen > 0 | is.na(Pgreen),]
+d <- d[Psenes <  20 & Psenes > 0 | is.na(Psenes),]
+d <- d[Proots <  20 & Proots > 0 | is.na(Proots),]
+d <- d[log.LL < 2.4 & log.LL > 0 | is.na(log.LL),]
 #only include species in phylogeny.
 d$Species <- d$tpl.Species
 tree$node.label <- NULL
@@ -235,11 +244,11 @@ d <- as.data.frame(d)
 d <- merge(z,d[,d.traits], by = 'tpl.Species')
 d <- merge(d, biome_out, all.x = T)
 
-#Get mat.c and map.c, where these are first taken from gbif, and then from itra-specific observations.
-d[,mat.c := gbif_temp]
-d[is.na(mat.c), mat.c := mat]
-d[,map.c := gbif_precip]
-d[is.na(map.c), map.c := map]
+#Get mat.c and map.c, where these are first taken from geo-referenced aggregated intra-specific mat/map, and then from GBIF.----
+d[,mat.c := mat]
+d[is.na(mat.c), mat.c := gbif_temp]
+d[,map.c := map]
+d[is.na(map.c), map.c := gbif_precip]
 
 #convert NaN values to NA
 d <- as.data.frame(d)

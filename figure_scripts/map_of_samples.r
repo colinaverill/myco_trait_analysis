@@ -7,6 +7,7 @@ library(data.table)
 
 #set output path.----
 output.path <- sample_map_figure.path
+ouput.path <- 'map.png'
 
 #load data.----
 d <- data.table(readRDS(intra_specific_analysis_data.path))
@@ -16,7 +17,7 @@ lon <- d$longitude
 lat <- d$latitude
 
 #set output spec.----
-png(filename=output.path,width=5,height=3,units='in',res=300)
+png(filename=output.path,width=8,height=4.8,units='in',res=300)
 
 world <- map_data('world')
 map <- ggplot() + geom_cartogram(data = world, map = world, 

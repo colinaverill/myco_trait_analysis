@@ -121,8 +121,14 @@ lm_pgls_means_myc.pgf_wc2_summary.path <- paste0(dir,'lm_pgls_means_myc.pgf_wc2_
 lm_pgls_means_myc.biome3_models.path <- paste0(dir,'lm_pgls_means_myc.biome3_models.rds')
 lm_pgls_means_myc.biome3_summary.path <- paste0(dir,'lm_pgls_means_myc.biome3_summary.rds')
 lm_pgls_means_myc.biome3_interaction_models.path <- paste0(dir,'lm_pgls_means_myc.biome3_interaction_models.rds')
-
-
+lm_pgls_means_myc.biome3_interaction_models_no_intercept.path <- paste0(dir,'lm_pgls_means_myc.biome3_interaction_models_no_intercept.rds')
+lm_pgls_means_myc.biome3_interaction_models_no_intercept_TOPLOT.path <- paste0(dir,'lm_pgls_means_myc.biome3_interaction_models_no_intercept_TOPLOT.rds')
+#new analysis
+pgls.glmm_myc.biome3_interaction.path <- paste0(dir,'pgls.glmm_myc.biome3_interaction.rds')
+  lm.glmm_myc.biome3_interaction.path <- paste0(dir,  'lm.glmm_myc.biome3_interaction.path')
+pgls.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir, 'pgls.glmm_myc.biome3_interaction_no.selection.rds')
+  lm.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir,   'lm.glmm_myc.biome3_interaction_no.selection.rds')
+pgls.glmm_NP_analysis.path <- paste0(dir,'pgls.glmm_NP_analysis.rds')
 #AICC files.
 biome_aicc_pgls_analysis.path <- paste0(dir,'biome_aicc_pgls_analysis.rds')
 aicc_model_comparison_plgs.path <- paste0(dir,'aicc_model_comparison_plgs.path')
@@ -134,6 +140,7 @@ aicc_lat_interactions_pgls.path <- paste0(dir,'aicc_lat_interactions_pgls.rds')
 
 #phylo estimated traits files.
   phylo_estimated_traits.path <- paste0(dir,'phylo_estimated_traits.rds')
+     phy_est_models_data.path <- paste0(dir,'phy_est_models_data.path')
 
 #Figure paths.----
 dir <- 'figures/'
@@ -143,3 +150,7 @@ phylogeny_figure.path <- paste0(dir,'phylogeny_figure.png')
 lm_pgls_effects_figure.path <- paste0(dir,'lm_vs_pgls_effects_figure.png')
 pgls_model_parameter_table.path <- paste0(dir,'pgls_model_parameter_table.csv')
 phylo_estimated_traits_figure.path <- paste0(dir,'phylo_est_traits.png')
+lat_myco_trait_means.path <- paste0(dir,'lat_myco_trait_means.png')
+GBIF_vs_WC2.path <- paste0(dir,'GBIF_vs_WC2.png')
+trait_N_table.path <- paste0(dir,'trait_N_table.csv')
+Supplementary_Data_File_1.path <- paste0(dir,'Supplementary_Data_File_1.csv')

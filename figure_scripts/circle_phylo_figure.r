@@ -24,6 +24,7 @@ pgf.assoc <- as.character(pgf.assoc[phy$tip.label])
 #pick colors
 cols1 <- c('#00acd9','#cfe83c') #AM, ECM colors
 cols2 <- c('#ffd821','#ff8f00') #gymno angio colors
+cols2 <- c('purple','#ffd821') #gymno angio colors
 #set transparency
 trans <- 0.5
 
@@ -39,12 +40,12 @@ tipring(tips=which(pgf.assoc=='gymno'), col = cols2[1], lwd = 6, radial.adj = 1.
 tipring(tips=which(pgf.assoc=='angio'), col = cols2[2], lwd = 6, radial.adj = 1.05, pch=15)
 #mycorrhizal legend.
 mtext(expression(paste(bold('mycorrhizal association'))), line = -5.1, adj = -.725)
-legend(-850,300, legend = c('arbuscular \nmycorrhizal','ectomycorrhizal'), 
+legend(-800,275, legend = c('arbuscular \nmycorrhizal','ectomycorrhizal'), 
        #title = expression(paste(bold('mycorrhizal association'))), 
        pch = 16, col = c(cols1[1],cols1[2]), 
        bty = 'n', x.intersp = 0.7, y.intersp = 1.5, cex = 1)
 mtext(expression(paste(bold('plant growth form'))), line = -13.5, adj = -.625)
-legend(-850,000, legend = c('gymnosperm','angiosperm'), 
+legend(-800,-000, legend = c('gymnosperm','angiosperm'), 
        #title = expression(paste(bold('mycorrhizal association'))), 
        pch = 16, col = c(cols2[1],cols2[2]), 
        bty = 'n', x.intersp = 0.7, y.intersp = 1.5, cex = 1)

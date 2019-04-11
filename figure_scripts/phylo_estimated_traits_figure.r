@@ -14,18 +14,29 @@ out.path <- phylo_estimated_traits_figure.path
 d <- readRDS(phylo_estimated_traits.path)
 
 #load models, grab lambda values.----
-z <- readRDS(lm_pgls_means_myc.pgf_merged.clim_models.path)
-z <- z[9:16] #subset to phylogentic models
-z <- lapply(z, caper::summary.pgls)
-names <- names(z)
+z <- readRDS(phy_est_models_data.path)
 lambda <- list()
 for(i in 1:length(z)){
-  lambda[[i]] <- z[[i]]$param[2]
+  lambda[[i]] <- z[[i]]$lambda
 }
 lambda <- unlist(lambda)
-names <- gsub('.pg','',names)
-z <- data.frame(names,lambda)
+z <- data.frame(names(z), lambda)
 colnames(z)[1] <- 'analysis'
+z$analysis <- gsub('root.l','root.L',z$analysis)
+
+
+#z <- readRDS(lm_pgls_means_myc.pgf_merged.clim_models.path)
+#z <- z[9:16] #subset to phylogentic models
+#z <- lapply(z, caper::summary.pgls)
+#names <- names(z)
+#lambda <- list()
+#for(i in 1:length(z)){
+#  lambda[[i]] <- z[[i]]$param[2]
+#}
+#lambda <- unlist(lambda)
+#names <- gsub('.pg','',names)
+#z <- data.frame(names,lambda)
+#colnames(z)[1] <- 'analysis'
 
 #setup to save.----
 png(filename=out.path,width=9,height=10,units='in',res=300)
@@ -99,7 +110,8 @@ trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
 mod<- lm(tr.form, data = d)
 s.mod <- summary(mod)
-plot(tr.form, data = d, cex = p.cex, pch = 16, col = alpha(d$col, trans), xlab = NA, ylab = NA, cex.axis = 1.2)
+#Modified to exclude one very low N green value that throws the whole axis.
+plot(tr.form, data = d[d$Ngreen > -1,], cex = p.cex, pch = 16, col = alpha(d$col, trans), xlab = NA, ylab = NA, cex.axis = 1.2)
 line.col <- ifelse(s.mod$coefficients[2,4] < 0.05,r.line.col,'gray')
 line.type <- ifelse(s.mod$coefficients[2,4] < 0.05, 1,2)
 abline(mod, lwd = 2, col = line.col, lty = line.type)

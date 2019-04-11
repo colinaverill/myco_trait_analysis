@@ -17,12 +17,12 @@
 #' test <- phylo_predicted(traits$species,traits$NitrogenGreen, phy, name = 'Ngreen')
 #'
 phylo_predicted <- function(species, trait, phy, name=NA){
+  source('functions/pic_pro.r')
   
   #grab complete observations of traits, assign names.
   dat <- data.frame(species, trait)
   dat <- dat[complete.cases(dat),]
   dat$species <- as.character(dat$species)
-  
         trait  <- dat$trait
   names(trait) <- dat$species
   
@@ -45,6 +45,15 @@ phylo_predicted <- function(species, trait, phy, name=NA){
     trait_est[[i]] <- picante::phyEstimate(n.phy, test.trait)
   }
   
+  #Get a lambda value for the intercept only model.
+  if(name != 'log.LL'){
+    ref.model <- pic_pro(y = name, x = c(), phylogeny = n.phy, trait.data = d, log = T, int.only = T)
+  }
+  if(name == 'log.LL'){
+    ref.model <- pic_pro(y = name, x = c(), phylogeny = n.phy, trait.data = d, int.only = T)
+  }
+  lambda <- ref.model$param[2]
+  
   #collapse list, return as data.frame
   trait_est <- do.call('rbind',trait_est)
   trait_est$Species <- rownames(trait_est)
@@ -52,6 +61,10 @@ phylo_predicted <- function(species, trait, phy, name=NA){
   #name the trait estimate in output.
   if(!is.na(name)){colnames(trait_est) <- c(paste0(name,'_estimate'), paste0(name,'_se'),'Species')}
   
+  #create list of output
+  output <- list(trait_est,ref.model,lambda)
+  names(output) <- c('pred','model','lambda')
+
   #return output.
-  return(trait_est)
+  return(output)
 }

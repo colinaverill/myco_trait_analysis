@@ -36,6 +36,6 @@ wc.map <- unlist(wc.map)
 mc.mat <- unlist(mc.mat)
 mc.map <- unlist(mc.map)
 
-par(mfrow=c(2,3))
+par(mfrow=c(1,2))
 plot(gb.mat ~ mc.mat);abline(0,1)
 plot(wc.mat ~ mc.mat);abline(0,1)

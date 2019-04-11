@@ -11,6 +11,8 @@ d <- readRDS(variance_decomp_output.path)
 #Get x axis labels.----
 lab <- colnames(d)
 lab <- substring(lab, 1, nchar(lab) - 4)
+lab <- c('Green Foliar N','Senescent Foliar N','Root N','Green Foliar P','Senescent P','Root P','Leaf Lifespan','Root Lifespan')
+rownames(d) <- gsub("_","-",rownames(d))
 cat <- rownames(d)
 cat.col <- gray.colors(length(cat))
 
@@ -18,7 +20,7 @@ cat.col <- gray.colors(length(cat))
 png(filename=output.path,width=5,height=5,units='in',res=300)
 
 #whole plot settings.----
-par(oma = c(.2,1,0,1.9), mar = c(3.5,2,1,8))
+par(oma = c(.2,1,0,1.9), mar = c(6,3,1,8), mfrow = c(1,1))
 
 #begin barplot.
 BP <- barplot(as.matrix(d), las = 2, xaxt = 'n', 
@@ -31,6 +33,8 @@ BP <- barplot(as.matrix(d), las = 2, xaxt = 'n',
 ypos = -0.05
 BP <- text(x = BP, y = ypos, srt = 45,
            adj = 1, labels = lab, xpd = TRUE)
+#y-label
+mtext('Proportional Variance', side = 2, line = 2.5)
 
 #end plot.----
 dev.off()

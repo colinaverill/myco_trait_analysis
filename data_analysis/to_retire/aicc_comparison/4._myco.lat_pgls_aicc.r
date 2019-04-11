@@ -68,4 +68,5 @@ for(i in 1:length(y)){
 }
 
 #Save output.----
+names(output) <- y
 saveRDS(output, output.path)
