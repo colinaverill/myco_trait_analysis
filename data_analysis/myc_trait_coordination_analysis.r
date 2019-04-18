@@ -40,14 +40,16 @@ predictors.2 <- '*MYCO_ASSO + nfix + pgf + mat.c + map.c'
 
 #Define all possible trait correlations.
 models <- c()
+   lab <- c()
 match <- traits
 for(i in 1:length(traits)){
   trait <- traits[i]
   match <- match[!(match %in% trait)]
   if(length(match) == 0){next}
+  lab.return <- paste0(trait,'.',match)
+  lab <- c(lab, lab.return)
   to_return <- list()
   for(k in 1:length(match)){
-    
     to_return[[k]] <- paste0('log10(',trait,') ~ log10(',match[k],')')
     if(match[k] == 'log.LL'){
       to_return[[k]] <- paste0('log10(',trait,') ~ ',match[k])
@@ -70,6 +72,7 @@ for(i in 1:length(models.1)){
   fit <- pgls_glmm(form, d, phy)
   model.1.output[[i]] <- fit
 }
+names(model.1.output) <- lab
 cat('Models without covariates fit.\n')
 toc()
 
@@ -82,6 +85,7 @@ for(i in 1:length(models.2)){
   fit <- pgls_glmm(form, d, phy)
   model.2.output[[i]] <- fit
 }
+names(model.2.output) <- lab
 cat('Models with covariates fit.\n')
 toc()
 
