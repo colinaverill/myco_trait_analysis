@@ -129,6 +129,7 @@ pgls.glmm_myc.biome3_interaction.path <- paste0(dir,'pgls.glmm_myc.biome3_intera
 pgls.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir, 'pgls.glmm_myc.biome3_interaction_no.selection.rds')
   lm.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir,   'lm.glmm_myc.biome3_interaction_no.selection.rds')
 pgls.glmm_NP_analysis.path <- paste0(dir,'pgls.glmm_NP_analysis.rds')
+pgls.glmm_myc_trait_coordination_analysis.path <- paste0(dir,'pgls.glmm_myc_trait_coordination_analysis.rds')
 #AICC files.
 biome_aicc_pgls_analysis.path <- paste0(dir,'biome_aicc_pgls_analysis.rds')
 aicc_model_comparison_plgs.path <- paste0(dir,'aicc_model_comparison_plgs.path')

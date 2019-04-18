@@ -19,10 +19,13 @@ list_order <- list('log.LL','root_lifespan','Ngreen','Nsenes','Nroots','Pgreen',
 names(list_order) <- c('log.LL','root_lifespan','Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots')
 pg <- pg[names(list_order)]
 lm <- lm[names(list_order)]
-#Get plotting names
+#Get plotting labels.
 to_name <- c('Leaf Lifespan','Root Lifespan',
               'Nitrogen Green','Nitrogen Senescent','Nitrogen Roots',
               'Phosphorus Green','Phosphorus Senescent','Phosphorus Roots')
+to_name <- c('a. Leaf Lifespan','b. Root Lifespan',
+             'c. Nitrogen Green','d. Nitrogen Senescent','e. Nitrogen Roots',
+             'f. Phosphorus Green','g. Phosphorus Senescent','h. Phosphorus Roots')
 names(pg) <- to_name
 names(lm) <- to_name
 

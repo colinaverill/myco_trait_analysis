@@ -25,18 +25,6 @@ colnames(z)[1] <- 'analysis'
 z$analysis <- gsub('root.l','root.L',z$analysis)
 
 
-#z <- readRDS(lm_pgls_means_myc.pgf_merged.clim_models.path)
-#z <- z[9:16] #subset to phylogentic models
-#z <- lapply(z, caper::summary.pgls)
-#names <- names(z)
-#lambda <- list()
-#for(i in 1:length(z)){
-#  lambda[[i]] <- z[[i]]$param[2]
-#}
-#lambda <- unlist(lambda)
-#names <- gsub('.pg','',names)
-#z <- data.frame(names,lambda)
-#colnames(z)[1] <- 'analysis'
 
 #setup to save.----
 png(filename=out.path,width=9,height=10,units='in',res=300)
@@ -60,7 +48,7 @@ p.cex <- 0.8
 
 #log leaf lifespan.----
 trait <- 'log.LL'
-label <- 'Leaf Lifespan'
+label <- 'a. Leaf Lifespan'
 units <- 'log(months)'
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -80,7 +68,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #root lifespan.----
 trait <- 'root.L'
-label <- 'Root Lifespan'
+label <- 'b. Root Lifespan'
 units <- 'log(months)'
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -104,7 +92,7 @@ legend(0, 10,legend = c('arbuscular \nmycorrhizal','ectomycorrhizal'), pch = 16,
 
 #Ngreen.----
 trait <- 'Ngreen'
-label <- 'Nitrogen Green'
+label <- 'c. Nitrogen Green'
 units <- expression(paste('log(mg N (g tissue)'^'-1',')'))
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -124,7 +112,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #Nsenes.----
 trait <- 'Nsenes'
-label <- 'Nitrogen Senescent'
+label <- 'd. Nitrogen Senescent'
 units <- expression(paste('log(mg N (g tissue)'^'-1',')'))
 mod<- lm(Nsenes ~ Nsenes_estimate, data = d)
 s.mod <- summary(mod)
@@ -141,7 +129,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #Nroots.----
 trait <- 'Nroots'
-label <- 'Nitrogen Roots'
+label <- 'e. Nitrogen Roots'
 units <- expression(paste('log(mg N (g tissue)'^'-1',')'))
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -160,7 +148,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #Pgreen.----
 trait <- 'Pgreen'
-label <- 'Phosphorus Green'
+label <- 'f. Phosphorus Green'
 units <- expression(paste('log(mg P (g tissue)'^'-1',')'))
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -179,7 +167,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #Psenes.----
 trait <- 'Pgreen'
-label <- 'Phosphorus Senescent'
+label <- 'g. Phosphorus Senescent'
 units <- expression(paste('log(mg P (g tissue)'^'-1',')'))
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))
@@ -198,7 +186,7 @@ mtext(bquote(R^2 == .(round(s.mod$r.squared, 2))), side = 3, adj = 0.05, line = 
 
 #Proots.----
 trait <- 'Proots'
-label <- 'Phosphorus Roots'
+label <- 'h. Phosphorus Roots'
 units <- expression(paste('log(mg P (g tissue)'^'-1',')'))
 trait_estimate <- paste0(trait,'_estimate')
 tr.form <- formula(paste0(trait,'~',trait_estimate))

@@ -30,6 +30,11 @@ ecm[[5]] <- c('Dipterocarpaceae')
 ecm[[6]] <- c('Myrtaceae')
 ecm[[7]] <- c('Phyllanthaceae')
 
+#Based on Stevens P. 2013. Angiosperm phylogeny website. Version 12, July 2012
+#And another reference for Pinaceae age.
+#These seem too close. No obvious patterns in N content w/o phylo correct.
+ages <- c('225','93.2','96.6','87.61','50.3','86.38','93.46')
+
 #Get a new ECM predictor.
 d$myco_2 <- as.character(d$MYCO_ASSO)
 for(i in 1:length(ecm)){

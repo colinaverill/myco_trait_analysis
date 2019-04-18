@@ -234,11 +234,11 @@ biome_out <- merge(biome_out1, biome_out2)
 biome_out <- merge(biome_out , biome_out3)
 biome_out <- merge(biome_out , forest_out)
 
-#get quantitative trait means.
+#get quantitative trait means.----
 d <- data.table(d)
 z <- d[,lapply(.SD, mean, na.rm=T), by = tpl.Species, .SDcols=q.traits]
 setkey(d,'tpl.Species')
-#merge in discrete traits.
+#merge in discrete traits.----
 d <- unique(d, by = 'tpl.Species')
 d <- as.data.frame(d)
 d <- merge(z,d[,d.traits], by = 'tpl.Species')

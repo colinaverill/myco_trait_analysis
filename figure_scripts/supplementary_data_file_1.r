@@ -17,7 +17,10 @@ phy$tip.label <- gsub('_',' ',phy$tip.label)
 phy$node.label <- NULL
 inter <- inter[inter$Species %in% phy$tip.label,]
 inter$MYCO_ASSO <- droplevels(inter$MYCO_ASSO)
-inter <- inter[,c('tpl.Species','biome3','MYCO_ASSO','nfix','pgf')]
+#Must have at least 1 trait observation.
+drop <- inter[is.na(inter$Ngreen) & is.na(inter$Nsenes) & is.na(inter$Nroots) & is.na(inter$Pgreen) & is.na(inter$Psenes) & is.na(inter$Proots) & is.na(inter$log.LL) & is.na(inter$root_lifespan),]
+inter <- inter[!(inter$tpl.Species %in% drop$tpl.Species),]
+inter <- inter[,c('tpl.Species','biome3','MYCO_ASSO','nfix','pgf','mat.c','map.c')]
 inter <- inter[complete.cases(inter),]
 
 #clean up the names.----

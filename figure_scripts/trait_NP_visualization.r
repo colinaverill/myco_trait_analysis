@@ -1,34 +1,32 @@
-#Plot AM-EM trait means across latitudinal zones.
+#visualize N:P ratio responses.
 rm(list=ls())
 source('paths.r')
 source('functions/p_report.r')
 library(data.table)
 library(caper)
-#set output path.----
-output.path <- lat_myco_trait_means.path
-#output.path <- 'test.png'
+
+library(MCMCglmm)
+
+#output path.
+output.path <- 'figures/trait_NP_plot.png'
 
 #load data.----
-d <- readRDS(pgls.glmm_myc.biome3_interaction_no.selection.path)
+d <- readRDS(pgls.glmm_NP_analysis.path)
+log <- d$log10
+non <- d$reg
 
-#subset and order the list.----
-list_order <- list('log.LL','root_lifespan','Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots')
-names(list_order) <- c('log.LL','root_lifespan','Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots')
-d <- d[names(list_order)]
-#Get plotting labels.
-names(d) <- c('Leaf Lifespan','Root Lifespan',
-              'Nitrogen Green','Nitrogen Senescent','Nitrogen Roots',
-              'Phosphorus Green','Phosphorus Senescent','Phosphorus Roots')
-names(d) <- c('a. Leaf Lifespan','b. Root Lifespan',
-              'c. Nitrogen Green','d. Nitrogen Senescent','e. Nitrogen Roots',
-              'f. Phosphorus Green','g. Phosphorus Senescent','h. Phosphorus Roots')
+#Based on senescent NP, seems like we should log transform. Green and root could go either way.
+#residual comparison hased out below.
+d <- log
 
+#Get plotting names
+names(d) <- c('Green N:P','Senescent N:P','Root N:P')
 
 #setup to save.----
-png(filename=output.path,width=9,height=9,units='in',res=300)
+png(filename=output.path,width=9,height=4,units='in',res=300)
 
 #Global plot settings.----
-par(mfrow=c(3,3),
+par(mfrow=c(1,3),
     mar = c(1.25,2,1.25,2),
     oma = c(1,4,1,1))
 a.cex <- 1.2
@@ -45,7 +43,7 @@ myc.col <- c('#f97de2','#9227af')
 myc.col <- c('#00acd9','#cfe83c')
 
 #plot loop!----
-for(i in 1:8){
+for(i in 1:length(d)){
   #data unique to model summary output.
   y <- d[[i]]$mean
   upr <- d[[i]]$upper
@@ -63,26 +61,11 @@ for(i in 1:8){
   p.val <- d[[i]]$p.values
   p.lab <- unlist(lapply(p.val, p_report))
   
-  #deal with root-lifespan.
-  if(i == 2){
-      y[c(1,2,5,6)] <- NA
-    upr[c(1,2,5,6)] <- NA
-    lwr[c(1,2,5,6)] <- NA
-      p.lab[c(1,3)] <- ''
-    lat.lab[c(1,3)] <- ''
-    temp.N <- d[[i]]$sample_size
-    N.lab <- c(paste(temp.N, collapse = ', '))
-    N.lab <- paste0('N = (',N.lab,')')
-    N.lab <- c('',N.lab, '')
-  }
-  
   #back log transform nutrient data.
-  if(i > 2){
     y <- 10^(y)
     upr <- 10^(upr)
     lwr <- 10^(lwr)      
-  }
-  
+
   #y limits.
   limy = c(0, max(upr,na.rm = T)*1.05)
   
@@ -95,9 +78,10 @@ for(i in 1:8){
   axis(side = 2, at = axis.ticks, las = 2, col = NA, col.ticks = 'black')
   
   #drop rectangles.
-  if(i < 3)        {shade_col <- box.shade.cols[1]}
-  if(i > 2 & i < 6){shade_col <- box.shade.cols[2]}
-  if(i > 5)        {shade_col <- box.shade.cols[3]}
+  #if(i < 3)        {shade_col <- box.shade.cols[1]}
+  #if(i > 2 & i < 6){shade_col <- box.shade.cols[2]}
+  #if(i > 5)        {shade_col <- box.shade.cols[3]}
+  shade_col <- box.shade.cols[2]
   rect(box.lim[1], limy[1], box.lim[2], limy[2], border = NA, col = adjustcolor(shade_col, trans.box[1]))
   rect(box.lim[2], limy[1], box.lim[3], limy[2], border = NA, col = adjustcolor(shade_col, trans.box[2]))
   rect(box.lim[3], limy[1], box.lim[4], limy[2], border = NA, col = adjustcolor(shade_col, trans.box[3]))
@@ -114,18 +98,53 @@ for(i in 1:8){
   mtext(trait.name, side = 3, adj = 0.02, line = 0.3)
   
   #legend in top right panel.
-  if(i == 2){
-    #Drop empty plot to place legend in.----
-    plot(y~x,xaxt='n',yaxt='n',bty='n',pch='',ylab='',xlab='',ylim = c(0,10), xlim = c(0,10))
-    legend(0, 10,legend = c('arbuscular \nmycorrhizal','ectomycorrhizal'), 
-           pch = 16, col = myc.col, bty = 'n', cex = 2,
-           x.intersp = 0.7, y.intersp = 1.5)
-  }
+  #if(i == 2){
+  #  #Drop empty plot to place legend in.----
+  #  plot(y~x,xaxt='n',yaxt='n',bty='n',pch='',ylab='',xlab='',ylim = c(0,10), xlim = c(0,10))
+  #  legend(0, 10,legend = c('arbuscular \nmycorrhizal','ectomycorrhizal'), 
+  #         pch = 16, col = myc.col, bty = 'n', cex = 2,
+  #         x.intersp = 0.7, y.intersp = 1.5)
+  #}
   
-  #unit labels on axes of plots 1, 3 and 6
-  if(i == 1){mtext('log(months)'                            , side = 2, line = 3)}
-  if(i == 3){mtext(expression(paste('mg N (g tissue)'^'-1')), side = 2, line = 3)}
-  if(i == 6){mtext(expression(paste('mg P (g tissue)'^'-1')), side = 2, line = 3)}
-}
+  #unit label on y-axis
+  if(i == 1){mtext(expression(paste('mg N (mg P)'^'-1')), side = 2, line = 3)}
+ }
 #end plot.----
 dev.off()
+
+
+
+
+
+#compare residuals: roots.
+plot_resids <- F
+if(plot_resids == T){
+  par(mfrow = c(3,2))
+  #compare residuals: green leaves.
+  reg.green.fit <- predict(non$greenNP$model)
+  reg.green.resid <- non$greenNP$data$greenNP - reg.green.fit
+  log.green.fit <- predict(log$greenNP$model)
+  log.green.resid <- log10(log$greenNP$data$greenNP) - log.green.fit
+  
+  plot(reg.green.resid ~ reg.green.fit)
+  plot(log.green.resid ~ log.green.fit)
+  
+  
+  #compare residuals: senescent leaves.
+  reg.senes.fit <- predict(non$senesNP$model)
+  reg.senes.resid <- non$senesNP$data$senesNP - reg.senes.fit
+  log.senes.fit <- predict(log$senesNP$model)
+  log.senes.resid <- log10(log$senesNP$data$senesNP) - log.senes.fit
+  
+  plot(reg.senes.resid ~ reg.senes.fit)
+  plot(log.senes.resid ~ log.senes.fit)
+  
+  #compare residuals: roots.
+  reg.roots.fit <- predict(non$rootsNP$model)
+  reg.roots.resid <- non$rootsNP$data$rootsNP - reg.roots.fit
+  log.roots.fit <- predict(log$rootsNP$model)
+  log.roots.resid <- log10(log$rootsNP$data$rootsNP) - log.roots.fit
+  
+  plot(reg.roots.resid ~ reg.roots.fit)
+  plot(log.roots.resid ~ log.roots.fit)
+}
