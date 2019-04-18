@@ -31,7 +31,7 @@ d$MYCO_ASSO <- droplevels(d$MYCO_ASSO)
 #Specify model structure----
 #specify traits.
 traits <- c('Ngreen','Nsenes','Nroots','Pgreen','Psenes','Proots','log.LL')
-traits <- c('Nroots','Psenes','Proots') #for testing.
+#traits <- c('Nroots','Psenes','Proots') #for testing.
 
 #Specify two sets of predictors.
 predictors.1 <- '*MYCO_ASSO'
