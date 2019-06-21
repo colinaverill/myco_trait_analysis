@@ -43,7 +43,6 @@ Proots <- lmer(log10(Proots)        ~ 1 + (1|tpl.Species) + (1|tpl.Genus) + (1|t
 log.LL <- lmer((log.LL)             ~ 1 + (1|tpl.Species) + (1|tpl.Genus) + (1|tpl.Family), data = d)
 root.L <- lmer(log10(root_lifespan) ~ 1 + (1|tpl.Species) + (1|tpl.Genus) + (1|tpl.Family), data = d)
 
-
 #get variances.----
 Ngreen_var <- data.frame(VarCorr(Ngreen))[,4]
 Nsenes_var <- data.frame(VarCorr(Nsenes))[,4]

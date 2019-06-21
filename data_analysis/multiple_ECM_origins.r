@@ -50,7 +50,9 @@ mod <- lm((Nroots) ~ myco_2 + nfix  + mat.c + map.c, data = d)
 summary(mod)
 
 
-form <- as.formula(paste0('Nroots ~ ~ MYCO_ASSO + nfix + mat.c + map.c'))
+form <- as.formula(paste0('Nsenes ~ myco_2 + nfix + mat.c + map.c'))
+fit <- pgls_glmm(form, d, phy)
+form <- as.formula(paste0('Nroots ~ MYCO_ASSO + nfix + mat.c + map.c'))
 fit <- pgls_glmm(form, d[d$pgf == 'gymno',], phy)
 
 

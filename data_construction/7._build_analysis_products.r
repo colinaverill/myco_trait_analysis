@@ -25,6 +25,7 @@ gbif <- data.table(read.csv(gbif_raw.path))
  phy <- read.tree(phylogeny_raw.path)
 full.tpl <- data.table(readRDS(full_tpl_output.path))
 nodDB <- data.table(read.csv(nodDB_raw.path))
+decid <- data.table(readRDS(merged_decid_traits.path))
 
 #modify doi names.----
 setnames(   d, 'doi','trait_doi')
@@ -47,7 +48,7 @@ d[Family =='', Family := NA]
 setnames(d,'Family','tpl.Family')
 
 
-#Assign woodiness and mycorrhizal type using species databases.----
+#Assign woodiness, deciduousness and mycorrhizal type using species databases.----
 #I wrote a special function to do a 4-criteria merge.
 #1. Merge on 'Species' in x and y.
 #2. For entries still unassigned, merge on 'Species' in x and 'tpl.Species' in y.
@@ -55,6 +56,8 @@ setnames(d,'Family','tpl.Family')
 #4. For entries still unassigned, merge on 'tpl.Species' in x and y.
 d <- spp_tpl.spp_merge(d, wood)
 d <- spp_tpl.spp_merge(d, myco)
+decid$tpl.Species <- decid$Species
+d <- spp_tpl.spp_merge(d, decid)
 
 #Assign mycorrhizal type using family and genus-level mycorrhizal knowledge.----
 #we know these genera are correct, and we know many of these legacy mycorrhizal databases can have errors.
@@ -178,7 +181,7 @@ intra.out <- d
 
 #get interspecific output.----
 q.traits <- c('Ngreen','Pgreen','Nsenes','Psenes','Nroots','Proots','log.LL','root_lifespan','mat','map','gbif_temp','gbif_precip')
-d.traits <- c('tpl.Species','tpl.Family','Species','MYCO_ASSO','woodiness','pgf','nfix','nfix2')
+d.traits <- c('tpl.Species','tpl.Family','Species','MYCO_ASSO','woodiness','deciduous','pgf','nfix','nfix2')
 #grab most frequent biome, accounts for "ties".
 #biome_out <- table(d[,.(tpl.Species,biome_name)])
 
@@ -255,6 +258,7 @@ d <- as.data.frame(d)
 d[sapply(d,is.na)] = NA 
 inter.out <- d
 
+#Merge in deciduous trait.----
 #save output.----
 saveRDS(pre_subset_intra_out, intra_presub_output.path)
 saveRDS(intra.out, intra.output.path)

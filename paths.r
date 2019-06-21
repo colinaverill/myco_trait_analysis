@@ -27,8 +27,8 @@ if(host != 'pecan2'){
   sun_PNAS2018_raw.path <- paste0(data.dir,'Sun_2018_PNAS.csv')
     sk_nov2018_raw.path <- paste0(data.dir,'sk_search_Nov_2018.csv')
 kell_phil_2018_raw.path <- paste0(data.dir,'Keller_Phillips_NewPhyt_2018.csv')
-    
-    
+   zanne_decid_raw.path <- paste0(data.dir,'GlobalLeafPhenologyDatabase.csv')
+     try_decid_raw.path <- paste0(data.dir,'TRY_Categorical_Traits_Lookup_Table_2012_03_17_TestRelease.csv')
 #raw mycorrhizal trait files.----
 dir <- data.dir
          e093_myco_raw.path <- paste0(dir,'myco_db.csv')
@@ -67,6 +67,10 @@ ornl_wood_clean.path <- paste0(dir,'ornl_wood_clean.rds')
 zann_wood_clean.path <- paste0(dir,'zann_wood_clean.rds')
 bien_wood_clean.path <- paste0(dir,'bien_wood_clean.rds')
 
+#Clean deciduousness files for merging.----
+zanne_decid_clean.path <- paste0(dir,'zanne_decid_clean.rds')
+  try_decid_clean.path <- paste0(dir,  'try_decid_clean.rds')
+
 #The Plant List standardized names.----
 tpl_names_lookup.path <- paste0(dir,'tpl_names_lookup.rds')
  full_tpl_output.path <- paste0(dir, 'full_tpl_lookup.rds')
@@ -97,6 +101,7 @@ fred_2.0_inter.path <- paste0(dir,'fred_2.0_inter_clean.rds')
 #merged trait, woodiness and mycorrhizal files.----
 merged_intra_traits.path <- paste0(data.dir,'merged_intra_traits.rds')
 merged_inter_traits.path <- paste0(data.dir,'merged_inter_traits.rds')
+merged_decid_traits.path <- paste0(data.dir,'merged_decid_traits.rds')
  merged_myco_traits.path <- paste0(data.dir,'merged_myco_traits.rds')
  merged_wood_traits.path <- paste0(data.dir,'merged_wood_traits.rds')
 merged_intra_traits_names_hand_checked.path <- paste0(data.dir,'merged_intra_traits_names_hand_checked.rds')
@@ -127,6 +132,7 @@ lm_pgls_means_myc.biome3_interaction_models_no_intercept_TOPLOT.path <- paste0(d
 pgls.glmm_myc.biome3_interaction.path <- paste0(dir,'pgls.glmm_myc.biome3_interaction.rds')
   lm.glmm_myc.biome3_interaction.path <- paste0(dir,  'lm.glmm_myc.biome3_interaction.path')
 pgls.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir, 'pgls.glmm_myc.biome3_interaction_no.selection.rds')
+pgls.glmm_myc.biome3_interaction_no.selection_DECIDUOUS.path <- paste0(dir, 'pgls.glmm_myc.biome3_interaction_no.selection_DECIDUOUS.rds')
   lm.glmm_myc.biome3_interaction_no.selection.path <- paste0(dir,   'lm.glmm_myc.biome3_interaction_no.selection.rds')
 pgls.glmm_NP_analysis.path <- paste0(dir,'pgls.glmm_NP_analysis.rds')
 pgls.glmm_myc_trait_coordination_analysis.path <- paste0(dir,'pgls.glmm_myc_trait_coordination_analysis.rds')

@@ -1,4 +1,4 @@
-#counting biome3 observations.
+#Checking how many species have multiple biome categorizations.
 rm(list=ls())
 source('paths.r')
 test <- readRDS(intra_specific_analysis_data.path)

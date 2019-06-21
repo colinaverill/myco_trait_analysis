@@ -6,7 +6,7 @@ library(scales)
 library(data.table)
 library(willeerd)
 
-#load trait data and phylogeny.
+#load trait data and phylogeny.----
 d <- readRDS(inter_specific_analysis_data.path)
 phy <- read.tree(phylogeny_raw.path)
 phy$tip.label  <- paste0(toupper(substr(phy$tip.label, 1, 1)), substr(phy$tip.label, 2, nchar(phy$tip.label)))
@@ -29,13 +29,15 @@ cols2 <- c('purple','#ffd821') #gymno angio colors
 trans <- 0.5
 
 
-#Begin plot commands.
+#Begin plot commands.----
 png(filename=phylogeny_figure.path,width=8,height=6,units='in',res=300)
 
 par(mar = c(2,13,2,1), xpd = NA)
 cartoon.plot(phy, type="fan", show.tip.label=FALSE, auto.polies=TRUE, clade.col="grey40")
-tipring(tips=which(myc.assoc=="AM" ), col=alpha(cols1[1], trans), lwd=8, radial.adj=1.1, pch=15)
-tipring(tips=which(myc.assoc=="ECM"), col=alpha(cols1[2], trans), lwd=8, radial.adj=1.1, pch=15)
+#tiplabels(tip=which(myc.assoc=="AM" ) , col=cols1[1], pch=18)
+#tiplabels(tip=which(myc.assoc=="ECM" ), col=cols1[2], pch=18)
+tipring(tips=which(myc.assoc=="AM" ), col=alpha(cols1[1], trans), lwd=8, radial.adj=1.1)
+tipring(tips=which(myc.assoc=="ECM"), col=alpha(cols1[2], trans), lwd=8, radial.adj=1.1)
 tipring(tips=which(pgf.assoc=='gymno'), col = cols2[1], lwd = 6, radial.adj = 1.05, pch=15)
 tipring(tips=which(pgf.assoc=='angio'), col = cols2[2], lwd = 6, radial.adj = 1.05, pch=15)
 #mycorrhizal legend.
