@@ -28,7 +28,7 @@
 #
 #
 # load necessary modules 
-module load R/3.4.0
+module load R
 #
 # in the directory specified above, invoke this function:
 Rscript data_analysis/pgls.glmm_latitude-myc_interaction_NO.SELECTION_DECIDUOUS.r
